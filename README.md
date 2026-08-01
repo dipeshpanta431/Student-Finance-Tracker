@@ -27,18 +27,6 @@ A web-based expense management system built using Python and Flask that helps st
 
 🚧 Currently under development.
 
-## 📚 Learning Log
-
-### Milestone 3
-
-Today I learned:
-
-- What an ORM is.
-- Why SQLAlchemy is used.
-- How Flask connects to a database.
-- How to create my first database model.
-- The purpose of primary keys, unique constraints, and nullable fields.
-
 ## 📌 Author
 
 Dipesh Panta

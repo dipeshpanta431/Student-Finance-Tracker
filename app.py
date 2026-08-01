@@ -1,10 +1,14 @@
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Flask, render_template
 from models import db,User
 from flask import Flask, render_template, redirect, url_for, flash
-from forms import RegistrationForm
+from forms import RegistrationForm,LoginForm
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 app.config["SECRET_KEY"] = "your-secret-key"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///expense_tracker.db"
@@ -50,6 +54,41 @@ def register():
 
     return render_template("register.html",form=form)
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+
+        if user and check_password_hash(user.password_hash,
+                                form.password.data):
+            login_user(user)
+
+            flash("Login successful!", "success")
+
+            return redirect(url_for("dashboard"))
+        else:
+            flash("Invalid email or password.", "danger")
+
+    return render_template("login.html", form=form)
+
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+    UserMixin
+)
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("dashboard.html")
 
 if __name__ == "__main__":
     with app.app_context():
