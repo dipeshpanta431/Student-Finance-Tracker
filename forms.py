@@ -1,8 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
-
-
+from wtforms import (
+    StringField,
+    PasswordField,
+    SubmitField,
+    FloatField,
+    SelectField,
+    DateField,
+    TextAreaField
+)
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    Length,
+    NumberRange
+)
 class RegistrationForm(FlaskForm):
 
     full_name = StringField(
@@ -57,3 +70,74 @@ class LoginForm(FlaskForm):
     )
 
     submit = SubmitField("Login")
+
+
+class TransactionForm(FlaskForm):
+
+    amount = FloatField(
+        "Amount",
+        validators=[
+            DataRequired(message="Amount is required."),
+            NumberRange(
+                min=0.01,
+                message="Amount must be greater than 0."
+            )
+        ]
+    )
+
+    transaction_type = SelectField(
+        "Transaction Type",
+        choices=[
+            ("Income", "Income"),
+            ("Expense", "Expense")
+        ],
+        validators=[DataRequired()]
+    )
+
+    category = SelectField(
+        "Category",
+        choices=[
+            ("Food", "Food"),
+            ("Transportation", "Transportation"),
+            ("Education", "Education"),
+            ("Shopping", "Shopping"),
+            ("Entertainment", "Entertainment"),
+            ("Medical", "Medical"),
+            ("Rent", "Rent"),
+            ("Salary", "Salary"),
+            ("Allowance", "Allowance"),
+            ("Other", "Other")
+        ],
+        validators=[DataRequired()]
+    )
+
+    payment_mode = SelectField(
+        "Payment Mode",
+        choices=[
+            ("Cash", "Cash"),
+            ("eSewa", "eSewa"),
+            ("Khalti", "Khalti"),
+            ("Bank Transfer", "Bank Transfer"),
+            ("Debit Card", "Debit Card"),
+            ("Credit Card", "Credit Card")
+        ],
+        validators=[DataRequired()]
+    )
+
+    date = DateField(
+        "Date",
+        format="%Y-%m-%d",
+        validators=[DataRequired()]
+    )
+
+    description = TextAreaField(
+        "Description",
+        validators=[
+            Length(
+                max=255,
+                message="Description cannot exceed 255 characters."
+            )
+        ]
+    )
+
+    submit = SubmitField("Save Transaction")
