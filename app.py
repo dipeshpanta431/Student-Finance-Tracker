@@ -3,6 +3,7 @@ from flask_login import (
     LoginManager,
     login_user,
     login_required,
+    logout_user,
     current_user
 )
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -108,14 +109,50 @@ def login():
     return render_template("login.html", form=form)
 
 
+
+# ----------------------------
+# LOGOUT
+# ----------------------------
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out successfully.", "success")
+    return redirect(url_for("login"))
+
+
 # ----------------------------
 # Dashboard
 # ----------------------------
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
 
+    transactions = Transaction.query.filter_by(
+        user_id=current_user.id
+    ).order_by(Transaction.date.desc()).all()
+
+    total_income = sum(
+        t.amount
+        for t in transactions
+        if t.transaction_type == "Income"
+    )
+
+    total_expense = sum(
+        t.amount
+        for t in transactions
+        if t.transaction_type == "Expense"
+    )
+
+    balance = total_income - total_expense
+
+    return render_template(
+        "dashboard.html",
+        transactions=transactions,
+        total_income=total_income,
+        total_expense=total_expense,
+        balance=balance
+    )
 
 # ----------------------------
 # Add Transaction
@@ -146,9 +183,69 @@ def add_transaction():
         return redirect(url_for("dashboard"))
 
     return render_template(
-        "add_transaction.html",
-        form=form
+    "add_transaction.html",
+    form=form,
+    title="Add Transaction",
+    button_text="Save Transaction"
     )
+
+
+
+
+
+
+# ----------------------------
+# Edit Transactions
+# ----------------------------
+@app.route("/edit/<int:transaction_id>", methods=["GET", "POST"])
+@login_required
+def edit_transaction(transaction_id):
+
+    transaction = Transaction.query.get_or_404(transaction_id)
+
+    form = TransactionForm(obj=transaction)
+
+    if form.validate_on_submit():
+
+        transaction.amount = form.amount.data
+        transaction.transaction_type = form.transaction_type.data
+        transaction.category = form.category.data
+        transaction.payment_mode = form.payment_mode.data
+        transaction.date = form.date.data
+        transaction.description = form.description.data
+
+        db.session.commit()
+
+        flash("Transaction updated successfully!", "success")
+
+        return redirect(url_for("dashboard"))
+
+    return render_template(
+    "add_transaction.html",
+    form=form,
+    title="Edit Transaction",
+    button_text="Save Changes"
+)
+
+
+
+# ----------------------------
+# Delete Transactions
+# ----------------------------
+@app.route("/delete/<int:transaction_id>")
+@login_required
+def delete_transaction(transaction_id):
+
+    transaction = Transaction.query.get_or_404(transaction_id)
+
+    db.session.delete(transaction)
+    db.session.commit()
+
+    flash("Transaction deleted successfully!", "success")
+
+    return redirect(url_for("dashboard"))
+
+
 
 
 # ----------------------------

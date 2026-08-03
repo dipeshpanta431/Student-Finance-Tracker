@@ -15,7 +15,7 @@
                 <div class="card-body p-4">
 
                     <h2 class="text-center mb-4">
-                        Add Transaction
+                        {{ title }}
                     </h2>
 
                     <form method="POST">
@@ -100,7 +100,7 @@
 
                         <!-- Submit Button -->
                         <div class="d-grid">
-                            {{ form.submit(class="btn btn-success") }}
+                           {{ form.submit(class="btn btn-success", value=button_text) }}
                         </div>
 
                     </form>
