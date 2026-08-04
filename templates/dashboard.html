@@ -67,48 +67,108 @@
     </div>
 
 </div>
-
 <div class="card shadow-sm mt-4">
-
     <div class="card-body">
 
         <form method="GET" action="{{ url_for('dashboard') }}">
 
-            <div class="row">
+            <div class="row g-2 align-items-center">
 
-                <div class="input-group">
-
+                <!-- Search -->
+                <div class="col">
                     <input
                         type="text"
                         name="search"
                         class="form-control"
-                        placeholder="Search by category or description"
+                        placeholder="Search transactions..."
                         value="{{ search }}">
+                </div>
 
+                <!-- Transaction Type -->
+                <div class="col-auto">
+                    <select name="type" class="form-select">
+
+                        <option value=""
+                            {% if transaction_type == "" %}selected{% endif %}>
+                            All Types
+                        </option>
+
+                        <option value="Income"
+                            {% if transaction_type == "Income" %}selected{% endif %}>
+                            Income
+                        </option>
+
+                        <option value="Expense"
+                            {% if transaction_type == "Expense" %}selected{% endif %}>
+                            Expense
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Category -->
+                <div class="col-auto">
+                    <select name="category" class="form-select">
+
+                        <option value=""
+                            {% if category == "" %}selected{% endif %}>
+                            All Categories
+                        </option>
+
+                        {% for value, label in categories %}
+                            <option value="{{ value }}"
+                                {% if category == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <!-- Payment Mode -->
+                <div class="col-auto">
+                    <select name="payment_mode" class="form-select">
+
+                        <option value=""
+                            {% if payment_mode == "" %}selected{% endif %}>
+                            All Payments
+                        </option>
+
+                        {% for value, label in payment_modes %}
+                            <option value="{{ value }}"
+                                {% if payment_mode == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+            
+                <!-- Search Button -->
+                <div class="col-auto">
                     <button
                         type="submit"
-                        class="btn btn-dark border-0">
-
+                        class="btn btn-dark">
                         <i class="bi bi-search"></i>
-
                     </button>
+                </div>
 
-                    {% if search %}
-                    <a href="{{ url_for('dashboard') }}"
-                    class="btn btn-light border">
+                <!-- Clear Button -->
+                <div class="col-auto">
+                    <a
+                        href="{{ url_for('dashboard') }}"
+                        class="btn btn-outline-secondary">
                         <i class="bi bi-x-lg"></i>
                     </a>
-                    {% endif %}
-
                 </div>
 
             </div>
+
         </form>
 
     </div>
-
 </div>
-
 
 <h4 class="mt-5 mb-3">Recent Transactions</h4>
 {% if transactions %}
@@ -154,7 +214,7 @@
         </tbody>
     </table>
 
-   {% else %}
+{% else %}
 
     {% if search %}
 

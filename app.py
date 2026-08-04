@@ -128,7 +128,11 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    form = TransactionForm()
     search = request.args.get("search", "")
+    transaction_type = request.args.get("type", "")
+    category = request.args.get("category", "")
+    payment_mode = request.args.get("payment_mode", "")
 
     transactions = Transaction.query.filter_by(
         user_id=current_user.id
@@ -141,7 +145,18 @@ def dashboard():
                 Transaction.description.ilike(f"%{search}%")
             )
         )
-
+    if transaction_type:
+        transactions = transactions.filter(
+            Transaction.transaction_type == transaction_type
+        )
+    if category:
+        transactions = transactions.filter(
+            Transaction.category == category
+        )
+    if payment_mode:
+        transactions = transactions.filter(
+            Transaction.payment_mode == payment_mode
+        )
     transactions = transactions.order_by(
         Transaction.date.desc()
     ).all()
@@ -166,7 +181,11 @@ def dashboard():
         total_income=total_income,
         total_expense=total_expense,
         balance=balance,
-        search=search
+        search=search,
+        transaction_type=transaction_type,
+        categories=form.category.choices,
+        payment_modes=form.payment_mode.choices,
+        payment_mode=payment_mode
     )
 
 # ----------------------------
