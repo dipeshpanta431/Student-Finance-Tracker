@@ -68,6 +68,48 @@
 
 </div>
 
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <form method="GET" action="{{ url_for('dashboard') }}">
+
+            <div class="row">
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search by category or description"
+                        value="{{ search }}">
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark border-0">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                    {% if search %}
+                    <a href="{{ url_for('dashboard') }}"
+                    class="btn btn-light border">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+
 <h4 class="mt-5 mb-3">Recent Transactions</h4>
 {% if transactions %}
 
@@ -93,19 +135,18 @@
                 <td>{{ transaction.payment_mode }}</td>
                 <td>{{ transaction.description }}</td>
                 <td>
-                    <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}"class="btn btn-sm btn-warning me-1">
+                    <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}"
+                    class="btn btn-sm btn-outline-secondary me-1">
                         <i class="bi bi-pencil-square"></i>
                     </a>
-                
+
                     <button
                         type="button"
-                        class="btn btn-sm btn-danger"
+                        class="btn btn-sm btn-outline-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteModal"
                         data-transaction-id="{{ transaction.id }}">
-
                         <i class="bi bi-trash"></i>
-
                     </button>
                 </td>
             </tr>
@@ -113,12 +154,22 @@
         </tbody>
     </table>
 
+   {% else %}
+
+    {% if search %}
+
+        <div class="alert alert-warning mt-4">
+            No transactions found matching
+            <strong>"{{ search }}"</strong>.
+        </div>
+
     {% else %}
 
-    <div class="alert alert-info mt-4">
-        No transactions yet. Click "Add Transaction" from the navigation bar to record your first income or expense.
-    </div>
+        <div class="alert alert-info mt-4">
+            No transactions found. Click <strong>Add Transaction</strong> to create your first one.
+        </div>
 
+    {% endif %}
 {% endif %}
 
 <div class="modal fade" id="deleteModal" tabindex="-1">

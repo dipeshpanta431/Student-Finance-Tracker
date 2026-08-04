@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
     login_user,
@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, User, Transaction
 from forms import RegistrationForm, LoginForm, TransactionForm
+from sqlalchemy import or_
 
 app = Flask(__name__)
 
@@ -127,10 +128,23 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    search = request.args.get("search", "")
 
     transactions = Transaction.query.filter_by(
         user_id=current_user.id
-    ).order_by(Transaction.date.desc()).all()
+    )
+
+    if search:
+        transactions = transactions.filter(
+            or_(
+                Transaction.category.ilike(f"%{search}%"),
+                Transaction.description.ilike(f"%{search}%")
+            )
+        )
+
+    transactions = transactions.order_by(
+        Transaction.date.desc()
+    ).all()
 
     total_income = sum(
         t.amount
@@ -151,7 +165,8 @@ def dashboard():
         transactions=transactions,
         total_income=total_income,
         total_expense=total_expense,
-        balance=balance
+        balance=balance,
+        search=search
     )
 
 # ----------------------------
