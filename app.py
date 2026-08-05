@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 from flask import Flask, render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
@@ -12,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, User, Transaction
 from forms import RegistrationForm, LoginForm, TransactionForm
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 app = Flask(__name__)
 
@@ -183,6 +184,19 @@ def dashboard():
         transactions = transactions.filter(
             Transaction.date <= to_date_obj
         )
+
+    expense_by_category = (
+        transactions
+        .filter(Transaction.transaction_type == "Expense")
+        .with_entities(
+            Transaction.category,
+            func.sum(Transaction.amount).label("total")
+        )
+        .group_by(Transaction.category)
+        .all()
+    )
+    category_labels = [item.category for item in expense_by_category]
+    category_totals = [float(item.total) for item in expense_by_category]
     transactions = transactions.order_by(
         Transaction.date.desc()
     ).all()
@@ -201,6 +215,8 @@ def dashboard():
 
     balance = total_income - total_expense
 
+   
+
     return render_template(
         "dashboard.html",
         transactions=transactions,
@@ -211,7 +227,11 @@ def dashboard():
         transaction_type=transaction_type,
         categories=form.category.choices,
         payment_modes=form.payment_mode.choices,
-        payment_mode=payment_mode
+        payment_mode=payment_mode,
+        from_date=from_date,
+        to_date=to_date,
+        category_labels=category_labels,
+        category_totals=category_totals
     )
 
 # ----------------------------

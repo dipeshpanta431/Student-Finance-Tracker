@@ -229,6 +229,48 @@
     </div>
 </div>
 
+<div class="row mt-4">
+
+    <!-- Income vs Expense -->
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    📊 Income vs Expense
+                </h5>
+            </div>
+
+           <div class="card-body" style="height: 320px;">
+                <canvas id="incomeExpenseChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Expense by Category -->
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    🥧 Expense by Category
+                </h5>
+            </div>
+
+            <div class="card-body" style="height:320px;">
+                <canvas id="expenseCategoryChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <h4 class="mt-5 mb-3">Recent Transactions</h4>
 {% if transactions %}
 
@@ -355,4 +397,212 @@
     });
 
 </script>
-    {% endblock %}
+{% endblock %}{% block scripts %}
+<script>
+
+const income = {{ total_income | tojson }};
+const expense = {{ total_expense | tojson }};
+
+const ctx = document.getElementById("incomeExpenseChart");
+
+new Chart(ctx, {
+
+    type: "bar",
+
+    data: {
+
+        labels: ["Income", "Expense"],
+
+        datasets: [{
+
+            data: [income, expense],
+
+           backgroundColor: [
+                "#22c55e",
+                "#ef4444"
+            ],
+
+            borderRadius: 14,
+
+            barPercentage: 0.5,
+
+            categoryPercentage: 0.6,
+            hoverBackgroundColor: [
+                "#16a34a",
+                "#dc2626"
+            ]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        animation: {
+
+            duration: 1200,
+
+            easing: "easeOutQuart"
+
+        },
+
+        plugins: {
+
+
+            legend: {
+
+                display: false
+
+            },
+
+            tooltip: {
+
+                callbacks: {
+
+                    label: function(context) {
+
+                        return "NPR " + context.raw.toLocaleString();
+
+                    }
+
+                }
+
+            }
+
+        },
+
+        scales: {
+
+            x: {
+
+                grid: {
+
+                    display: false
+
+                }
+
+            },
+
+            y: {
+
+                beginAtZero: true,
+
+                title: {
+
+                    display: true,
+
+                    text: "NPR",
+
+                    font: {
+
+                        size: 14,
+
+                        weight: "bold"
+
+                    }
+
+                },
+
+                ticks: {
+
+                    callback: function(value) {
+
+                        return value.toLocaleString();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+const categoryLabels = {{ category_labels | tojson }};
+const categoryTotals = {{ category_totals | tojson }};
+
+const pieCtx = document.getElementById("expenseCategoryChart");
+
+const categoryColors = {
+    "Food": "#f97316",
+    "Transportation": "#3b82f6",
+    "Education": "#8b5cf6",
+    "Shopping": "#ec4899",
+    "Entertainment": "#facc15",
+    "Medical": "#ef4444",
+    "Rent": "#6b7280",
+    "Salary": "#22c55e",
+    "Allowance": "#14b8a6",
+    "Other": "#94a3b8"
+};
+
+const pieColors = categoryLabels.map(category =>
+    categoryColors[category] || "#94a3b8"
+);
+
+
+new Chart(pieCtx, {
+
+    type: "pie",
+
+    data: {
+
+        labels: categoryLabels,
+
+        datasets: [{
+
+            data: categoryTotals,
+
+            borderWidth: 2,
+            backgroundColor: pieColors,
+
+            borderColor: "#ffffff"
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom"
+
+            },
+
+            tooltip: {
+
+                callbacks: {
+
+                    label: function(context) {
+
+                        return context.label + ": NPR " +
+                               context.raw.toLocaleString();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+{% endblock %}
