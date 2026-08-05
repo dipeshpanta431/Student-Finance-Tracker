@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
@@ -133,6 +135,8 @@ def dashboard():
     transaction_type = request.args.get("type", "")
     category = request.args.get("category", "")
     payment_mode = request.args.get("payment_mode", "")
+    from_date = request.args.get("from_date", "")
+    to_date = request.args.get("to_date", "")   
 
     transactions = Transaction.query.filter_by(
         user_id=current_user.id
@@ -156,6 +160,28 @@ def dashboard():
     if payment_mode:
         transactions = transactions.filter(
             Transaction.payment_mode == payment_mode
+        )
+    from_date_obj = None
+    to_date_obj = None
+
+    if from_date:
+        from_date_obj = datetime.strptime(from_date, "%Y-%m-%d").date()
+
+    if to_date:
+        to_date_obj = datetime.strptime(to_date, "%Y-%m-%d").date()
+
+    if from_date_obj and to_date_obj and from_date_obj > to_date_obj:
+        flash("From Date cannot be later than To Date.", "warning")
+        return redirect(url_for("dashboard"))
+
+    if from_date_obj:
+        transactions = transactions.filter(
+            Transaction.date >= from_date_obj
+        )
+
+    if to_date_obj:
+        transactions = transactions.filter(
+            Transaction.date <= to_date_obj
         )
     transactions = transactions.order_by(
         Transaction.date.desc()

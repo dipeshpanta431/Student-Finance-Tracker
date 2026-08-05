@@ -73,7 +73,7 @@
         <form method="GET" action="{{ url_for('dashboard') }}">
 
             <div class="row g-2 align-items-center">
-
+                
                 <!-- Search -->
                 <div class="col">
                     <input
@@ -161,6 +161,65 @@
                         class="btn btn-outline-secondary">
                         <i class="bi bi-x-lg"></i>
                     </a>
+                </div>
+                <div class="col-auto">
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#advancedFilters"
+                        aria-expanded="false"
+                        aria-controls="advancedFilters">
+
+                        <i class="bi bi-sliders"></i>
+                        Advanced Filters
+
+                    </button>
+                </div>
+
+            </div>
+            <div class="collapse mt-3" id="advancedFilters">
+
+                <div class="row g-3">
+
+                    <!-- From Date -->
+                    <div class="col-md-3">
+
+                        <div class="form-floating">
+
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="fromDate"
+                                name="from_date">
+
+                            <label for="fromDate">
+                                From Date
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <!-- To Date -->
+                    <div class="col-md-3">
+
+                        <div class="form-floating">
+
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="toDate"
+                                name="to_date">
+
+                            <label for="toDate">
+                                To Date
+                            </label>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
