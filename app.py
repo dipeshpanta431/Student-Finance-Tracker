@@ -14,7 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Transaction
 from forms import RegistrationForm, LoginForm, TransactionForm
 from sqlalchemy import or_, func
-
+from constants import INCOME_CATEGORIES, EXPENSE_CATEGORIES
 app = Flask(__name__)
 
 # ----------------------------
@@ -231,7 +231,9 @@ def dashboard():
         from_date=from_date,
         to_date=to_date,
         category_labels=category_labels,
-        category_totals=category_totals
+        category_totals=category_totals,
+        income_categories=INCOME_CATEGORIES,
+        expense_categories=EXPENSE_CATEGORIES
     )
 
 # ----------------------------
@@ -249,6 +251,12 @@ def add_transaction():
             amount=form.amount.data,
             transaction_type=form.transaction_type.data,
             category=form.category.data,
+            custom_category=(
+                form.custom_category.data.strip()
+                if form.category.data == "Other"
+                and form.custom_category.data
+                else None
+            ),
             payment_mode=form.payment_mode.data,
             date=form.date.data,
             description=form.description.data,
@@ -266,7 +274,9 @@ def add_transaction():
     "add_transaction.html",
     form=form,
     title="Add Transaction",
-    button_text="Save Transaction"
+    button_text="Save Transaction",
+    income_categories=INCOME_CATEGORIES,
+    expense_categories=EXPENSE_CATEGORIES
     )
 
 

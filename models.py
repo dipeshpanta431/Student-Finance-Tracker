@@ -44,6 +44,7 @@ class Transaction(db.Model):
     date = db.Column(db.Date, nullable=False)
 
     description = db.Column(db.String(255), nullable=True)
+    custom_category = db.Column(db.String(100), nullable=True)
 
     user_id = db.Column(
         db.Integer,

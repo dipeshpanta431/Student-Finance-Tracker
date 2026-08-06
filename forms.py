@@ -1,5 +1,6 @@
+from constants import INCOME_CATEGORIES, EXPENSE_CATEGORIES
 from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 from wtforms import (
     StringField,
     PasswordField,
@@ -7,7 +8,8 @@ from wtforms import (
     FloatField,
     SelectField,
     DateField,
-    TextAreaField
+    TextAreaField,
+    ValidationError
 )
 from wtforms.validators import (
     DataRequired,
@@ -16,6 +18,7 @@ from wtforms.validators import (
     Length,
     NumberRange
 )
+
 class RegistrationForm(FlaskForm):
 
     full_name = StringField(
@@ -96,18 +99,7 @@ class TransactionForm(FlaskForm):
 
     category = SelectField(
         "Category",
-        choices=[
-            ("Food", "Food"),
-            ("Transportation", "Transportation"),
-            ("Education", "Education"),
-            ("Shopping", "Shopping"),
-            ("Entertainment", "Entertainment"),
-            ("Medical", "Medical"),
-            ("Rent", "Rent"),
-            ("Salary", "Salary"),
-            ("Allowance", "Allowance"),
-            ("Other", "Other")
-        ],
+        choices=INCOME_CATEGORIES + EXPENSE_CATEGORIES,
         validators=[DataRequired()]
     )
 
@@ -139,5 +131,18 @@ class TransactionForm(FlaskForm):
             )
         ]
     )
+    custom_category = StringField(
+        "Specify Category",
+        validators=[Optional(), Length(max=100)]
+    )
 
     submit = SubmitField("Save Transaction")
+    def validate_custom_category(self, field):
+
+        if (
+            self.category.data == "Other"
+            and not (field.data and field.data.strip())
+        ):
+            raise ValidationError(
+                "Please specify the category."
+            )

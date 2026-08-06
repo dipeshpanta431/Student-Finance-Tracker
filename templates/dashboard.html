@@ -291,7 +291,13 @@
             <tr>
                 <td>{{ transaction.date }}</td>
                 <td>{{ transaction.transaction_type }}</td>
-                <td>{{ transaction.category }}</td>
+                <td>
+                    {% if transaction.category == "Other" and transaction.custom_category %}
+                        {{ transaction.custom_category }}
+                    {% else %}
+                        {{ transaction.category }}
+                    {% endif %}
+                </td>
                 <td>NPR {{ transaction.amount }}</td>
                 <td>{{ transaction.payment_mode }}</td>
                 <td>{{ transaction.description }}</td>
@@ -528,6 +534,9 @@ new Chart(ctx, {
 const categoryLabels = {{ category_labels | tojson }};
 const categoryTotals = {{ category_totals | tojson }};
 
+const totalExpense = categoryTotals.reduce((sum, value) => sum + value, 0);
+
+
 const pieCtx = document.getElementById("expenseCategoryChart");
 
 const categoryColors = {
@@ -583,21 +592,25 @@ new Chart(pieCtx, {
 
             },
 
-            tooltip: {
+           tooltip: {
 
                 callbacks: {
 
                     label: function(context) {
 
-                        return context.label + ": NPR " +
-                               context.raw.toLocaleString();
+                        const value = context.raw;
+
+                        const percentage = totalExpense
+                            ? ((value / totalExpense) * 100).toFixed(1)
+                            : 0;
+
+                        return `${context.label}: ${percentage}% (NPR ${value.toLocaleString()})`;
 
                     }
 
                 }
 
             }
-
         }
 
     }
