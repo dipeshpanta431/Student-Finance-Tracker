@@ -14,7 +14,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Transaction
 from forms import RegistrationForm, LoginForm, TransactionForm
 from sqlalchemy import or_, func
-from constants import INCOME_CATEGORIES, EXPENSE_CATEGORIES
+from constants import (
+    INCOME_CATEGORIES,
+    EXPENSE_CATEGORIES,
+    ALL_CATEGORIES
+)
 app = Flask(__name__)
 
 # ----------------------------
@@ -147,7 +151,9 @@ def dashboard():
         transactions = transactions.filter(
             or_(
                 Transaction.category.ilike(f"%{search}%"),
-                Transaction.description.ilike(f"%{search}%")
+                Transaction.description.ilike(f"%{search}%"),
+                Transaction.custom_category.ilike(f"%{search}%"),
+                Transaction.payment_mode.ilike(f"%{search}%")
             )
         )
     if transaction_type:
@@ -216,6 +222,14 @@ def dashboard():
     balance = total_income - total_expense
 
    
+    if transaction_type == "Income":
+        categories = INCOME_CATEGORIES
+
+    elif transaction_type == "Expense":
+        categories = EXPENSE_CATEGORIES
+
+    else:
+        categories = ALL_CATEGORIES
 
     return render_template(
         "dashboard.html",
@@ -225,7 +239,7 @@ def dashboard():
         balance=balance,
         search=search,
         transaction_type=transaction_type,
-        categories=form.category.choices,
+        categories=categories,
         payment_modes=form.payment_mode.choices,
         payment_mode=payment_mode,
         from_date=from_date,
@@ -303,19 +317,26 @@ def edit_transaction(transaction_id):
         transaction.payment_mode = form.payment_mode.data
         transaction.date = form.date.data
         transaction.description = form.description.data
+        transaction.custom_category = (
+            form.custom_category.data.strip()
+            if form.category.data == "Other"
+            and form.custom_category.data
+            else None
+        )
 
         db.session.commit()
 
         flash("Transaction updated successfully!", "success")
 
         return redirect(url_for("dashboard"))
-
     return render_template(
     "add_transaction.html",
     form=form,
     title="Edit Transaction",
-    button_text="Save Changes"
-)
+    button_text="Save Changes",
+    income_categories=INCOME_CATEGORIES,
+    expense_categories=EXPENSE_CATEGORIES
+    )
 
 
 

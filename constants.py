@@ -19,3 +19,6 @@ EXPENSE_CATEGORIES = [
     ("Rent", "Rent"),
     ("Other", "Other")
 ]
+ALL_CATEGORIES = list(
+    dict(INCOME_CATEGORIES + EXPENSE_CATEGORIES).items()
+)

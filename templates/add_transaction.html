@@ -135,83 +135,14 @@
 
 {% block scripts %}
 <script>
+    window.incomeCategories =
+        {{ income_categories | map(attribute=0) | list | tojson }};
 
-const incomeCategories =
-{{ income_categories | map(attribute=0) | list | tojson }};
+    window.expenseCategories =
+        {{ expense_categories | map(attribute=0) | list | tojson }};
 
-const expenseCategories =
-{{ expense_categories | map(attribute=0) | list | tojson }};
-
-const transactionType = document.getElementById("transaction_type");
-const category = document.getElementById("category");
-let previousCategory = category.value;
-function updateCategories() {
-
-    const selectedCategory = "{{ form.category.data or '' }}";
-    const selectedType = transactionType.value;
-
-    category.innerHTML = "";
-
-    const categories = selectedType === "Income"
-        ? incomeCategories
-        : expenseCategories;
-
-    categories.forEach(function(item) {
-
-        const option = document.createElement("option");
-
-        option.value = item;
-        option.textContent = item;
-
-        if (item === selectedCategory) {
-            option.selected = true;
-        }
-
-        category.appendChild(option);
-
-    });
-
-}
-
-const customCategoryGroup =
-    document.getElementById("customCategoryGroup");
-
-const customCategoryInput =
-    document.getElementById("custom_category");
-
-function toggleCustomCategory() {
-
-    if (category.value === "Other") {
-
-        customCategoryGroup.style.display = "block";
-        customCategoryInput.required = true;
-
-    } else {
-
-        customCategoryGroup.style.display = "none";
-        customCategoryInput.required = false;
-
-        // Clear only if the user intentionally switched away from "Other"
-        if (previousCategory === "Other") {
-            customCategoryInput.value = "";
-        }
-
-    }
-
-    previousCategory = category.value;
-
-}
-
-transactionType.addEventListener("change", function () {
-
-    updateCategories();
-    toggleCustomCategory();
-
-});
-
-category.addEventListener("change", toggleCustomCategory);
-
-updateCategories();
-toggleCustomCategory();
+    window.initialCategory =
+        {{ (form.category.data or "") | tojson }};
 </script>
+<script src="{{ url_for('static', filename='js/transaction_form.js') }}"></script>
 {% endblock %}
