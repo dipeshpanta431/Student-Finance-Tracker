@@ -18,8 +18,7 @@
 
 
 
-
-<div class="row mt-4">
+<div class="row g-4 mb-5">
 
     <!-- Total Income -->
     <div class="col-md-4">
@@ -67,7 +66,212 @@
     </div>
 
 </div>
-<div class="card shadow-sm mt-4">
+<div class="card shadow-sm mb-5">
+
+    <div class="card-header">
+        <h5 class="mb-0">💰 Monthly Budget</h5>
+    </div>
+
+    <div class="card-body">
+
+        {% if current_budget %}
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <strong>Month</strong><br>
+                    {{ current_budget.budget_month.strftime("%B %Y") }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Budget</strong><br>
+                    NPR {{ "{:,.2f}".format(budget_amount) }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Spent</strong><br>
+                    NPR {{ "{:,.2f}".format(current_month_expense) }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Remaining</strong><br>
+
+                    {% if remaining_budget >= 0 %}
+                        <span class="text-success">
+                            NPR {{ "{:,.2f}".format(remaining_budget) }}
+                        </span>
+                    {% else %}
+                        <span class="text-danger">
+                            NPR {{ "{:,.2f}".format(remaining_budget|abs) }}
+                        </span>
+                    {% endif %}
+
+                </div>
+                <hr>
+
+                <div class="mt-3">
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <strong>Budget Usage</strong>
+
+                        <span>{{ "%.1f"|format(budget_percentage) }}%</span>
+
+                    </div>
+
+                    <div class="progress" style="height: 22px;">
+
+                        <div
+                            class="progress-bar {{ progress_color }}"
+                            role="progressbar"
+                            style="width: {{ progress_width }}%;"
+                        >
+                           {{ "%.0f"|format(progress_width) }}%
+                        </div>
+
+                    </div>
+                    <div class="mt-3">
+
+                        <span class="badge
+                            {% if progress_color == 'bg-success' %}
+                                text-bg-success
+                            {% elif progress_color == 'bg-warning' %}
+                                text-bg-warning
+                            {% elif progress_color == 'bg-danger' %}
+                                text-bg-danger
+                            {% else %}
+                                text-bg-secondary
+                            {% endif %}
+                        ">
+                            {{ budget_status }}
+                        </span>
+
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        {{ budget_message }}
+                    </p>
+                    <div class="mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary"
+                            id="editBudgetBtn"
+                        >
+                            ✏️ Edit Budget
+                        </button>
+
+                    </div>
+                    <div
+                        id="editBudgetForm"
+                        style="display:none;"
+                        class="mt-4"
+                    >
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('save_budget') }}"
+                        >
+
+                            {{ budget_form.hidden_tag() }}
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+
+                                    {{ budget_form.budget_month.label(class="form-label") }}
+
+                                    {{ budget_form.budget_month(
+                                        class="form-control",
+                                        type="month",
+                                        value=current_budget.budget_month.strftime("%Y-%m")
+                                    ) }}
+
+                                </div>
+
+                                <div class="col-md-4">
+
+                                    {{ budget_form.amount.label(class="form-label") }}
+
+                                    {{ budget_form.amount(
+                                        class="form-control",
+                                        value=current_budget.amount
+                                    ) }}
+
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-end">
+
+                                    <button
+                                        class="btn btn-success w-100"
+                                        type="submit"
+                                    >
+                                        Update Budget
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p class="text-muted mb-3">
+                No budget has been set for this month.
+            </p>
+
+            <form method="POST" action="{{ url_for('save_budget') }}">
+
+                {{ budget_form.hidden_tag() }}
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        {{ budget_form.budget_month.label(class="form-label") }}
+
+                        {{ budget_form.budget_month(
+                            class="form-control",
+                            type="month"
+                        ) }}
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        {{ budget_form.amount.label(class="form-label") }}
+
+                        {{ budget_form.amount(
+                            class="form-control",
+                            placeholder="Enter monthly budget"
+                        ) }}
+
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end mb-3">
+
+                        {{ budget_form.submit(
+                            class="btn btn-success w-100"
+                        ) }}
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+<div class="card shadow-sm mb-5">
     <div class="card-body">
 
         <form method="GET" action="{{ url_for('dashboard') }}">
@@ -228,7 +432,11 @@
 
     </div>
 </div>
-<div class="row mt-4">
+ <h4 class="mb-4">
+    📊 Financial Insights
+    </h4>
+<div class="row g-4 mb-5">
+   
 
     <!-- Income vs Expense -->
     {% if transactions %}
@@ -262,8 +470,29 @@
 
 </div>
 
+<div class="col-12 mb-5">
 
-<h4 class="mt-5 mb-3">Recent Transactions</h4>
+    
+
+    <div class="card shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">
+            Daily Income vs Expense — {{ current_month.strftime('%B %Y') }}
+        </h5>
+    </div>
+
+    <div class="card-body" style="height:350px;">
+        <canvas id="dailyTrendChart"></canvas>
+    </div>
+
+</div>
+
+</div>
+
+<h4 class="mb-4">
+    📋 Recent Transactions
+</h4>
 {% if transactions %}
 
     <table class="table table-striped table-bordered mt-4">
@@ -405,11 +634,19 @@ window.dashboardCharts = {
     expense: {{ total_expense | tojson }},
 
     categoryLabels: {{ category_labels | tojson }},
-    categoryTotals: {{ category_totals | tojson }}
+    categoryTotals: {{ category_totals | tojson }},
+    currentMonthName: {{ current_month.strftime("%B") | tojson }}
 
+   
 };
+
+
 </script>
-
+<script>
+    const dailyLabels = {{ daily_labels | tojson }};
+    const dailyIncome = {{ daily_income_data | tojson }};
+    const dailyExpense = {{ daily_expense_data | tojson }};
+</script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-
+<script src="{{ url_for('static', filename='js/budget.js') }}"></script>
 {% endblock %}

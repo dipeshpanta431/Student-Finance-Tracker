@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import datetime,date
+from collections import defaultdict
+from calendar import monthrange     
 
 
 from flask import Flask, render_template, redirect, request, url_for, flash
@@ -11,8 +13,9 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from models import db, User, Transaction
-from forms import RegistrationForm, LoginForm, TransactionForm
+from helpers import calculate_budget_progress, calculate_dashboard_totals, get_budget_message, get_budget_status, prepare_category_chart_data
+from models import Budget, db, User, Transaction
+from forms import RegistrationForm, LoginForm, TransactionForm, BudgetForm
 from sqlalchemy import or_, func
 from constants import (
     INCOME_CATEGORIES,
@@ -136,6 +139,7 @@ def logout():
 @login_required
 def dashboard():
     form = TransactionForm()
+    budget_form = BudgetForm()
     search = request.args.get("search", "")
     transaction_type = request.args.get("type", "")
     category = request.args.get("category", "")
@@ -201,25 +205,14 @@ def dashboard():
         .group_by(Transaction.category)
         .all()
     )
-    category_labels = [item.category for item in expense_by_category]
-    category_totals = [float(item.total) for item in expense_by_category]
+    category_labels, category_totals = \
+    prepare_category_chart_data(expense_by_category)
     transactions = transactions.order_by(
         Transaction.date.desc()
     ).all()
 
-    total_income = sum(
-        t.amount
-        for t in transactions
-        if t.transaction_type == "Income"
-    )
-
-    total_expense = sum(
-        t.amount
-        for t in transactions
-        if t.transaction_type == "Expense"
-    )
-
-    balance = total_income - total_expense
+    total_income, total_expense, balance = \
+    calculate_dashboard_totals(transactions)
 
    
     if transaction_type == "Income":
@@ -230,6 +223,90 @@ def dashboard():
 
     else:
         categories = ALL_CATEGORIES
+
+    current_month = date.today().replace(day=1)
+    daily_income = defaultdict(float)
+    daily_expense = defaultdict(float)
+
+    for transaction in transactions:
+
+        if (
+            transaction.date.year == current_month.year and
+            transaction.date.month == current_month.month
+        ):
+
+            day = transaction.date.day
+
+            if transaction.transaction_type == "Income":
+                daily_income[day] += float(transaction.amount)
+
+            else:
+                daily_expense[day] += float(transaction.amount)
+
+    days_in_month = monthrange(
+        current_month.year,
+        current_month.month
+    )[1]
+
+    daily_labels = list(range(1, days_in_month + 1))
+
+    daily_income_data = [
+        daily_income.get(day, 0)
+        for day in daily_labels
+    ]
+
+    daily_expense_data = [
+        daily_expense.get(day, 0)
+        for day in daily_labels
+    ]
+    current_budget = Budget.query.filter_by(
+        user_id=current_user.id,
+        budget_month=current_month
+    ).first()
+    current_month_expense = sum(
+
+        transaction.amount
+
+        for transaction in transactions
+
+        if (
+            transaction.transaction_type == "Expense"
+            and transaction.date.year == current_month.year
+            and transaction.date.month == current_month.month
+        )
+
+    )
+    budget_amount = (
+        current_budget.amount
+        if current_budget
+        else 0
+    )
+
+    remaining_budget = budget_amount - current_month_expense
+
+    budget_percentage, progress_width = \
+    calculate_budget_progress(
+        budget_amount,
+        current_month_expense
+    )
+
+    if budget_amount == 0:
+
+        budget_status = "No Budget"
+        progress_color = "bg-secondary"
+
+    else:
+
+        budget_status, progress_color = get_budget_status(
+            budget_percentage
+        )
+    budget_message = get_budget_message(
+    budget_amount,
+    current_month_expense,
+    remaining_budget
+)
+    if not budget_form.budget_month.data:
+        budget_form.budget_month.data = datetime.today().strftime("%Y-%m")
 
     return render_template(
         "dashboard.html",
@@ -247,7 +324,22 @@ def dashboard():
         category_labels=category_labels,
         category_totals=category_totals,
         income_categories=INCOME_CATEGORIES,
-        expense_categories=EXPENSE_CATEGORIES
+        expense_categories=EXPENSE_CATEGORIES,
+        daily_labels=daily_labels,
+        daily_income_data=daily_income_data,
+        daily_expense_data=daily_expense_data,
+        current_month=current_month,
+        budget_form=budget_form,
+        current_budget=current_budget,
+        budget_amount=budget_amount,
+        current_month_expense=current_month_expense,
+        remaining_budget=remaining_budget,
+        budget_percentage=budget_percentage,
+        progress_width=progress_width,
+        budget_status=budget_status,
+        progress_color=progress_color,
+        budget_message=budget_message
+      
     )
 
 # ----------------------------
@@ -355,9 +447,58 @@ def delete_transaction(transaction_id):
     flash("Transaction deleted successfully!", "success")
 
     return redirect(url_for("dashboard"))
+#---------------
+#Budget
+#---------------
+@app.route("/budget/save", methods=["POST"])
+@login_required
+def save_budget():
 
+    form = BudgetForm()
 
+    if form.validate_on_submit():
 
+        budget_date = datetime.strptime(
+            form.budget_month.data,
+            "%Y-%m"
+        ).date().replace(day=1)
+
+        existing_budget = Budget.query.filter_by(
+            user_id=current_user.id,
+            budget_month=budget_date
+        ).first()
+
+        if existing_budget:
+
+            existing_budget.amount = form.amount.data
+
+            flash(
+                "Budget updated successfully!",
+                "success"
+            )
+
+        else:
+
+            budget = Budget(
+
+                budget_month=budget_date,
+
+                amount=form.amount.data,
+
+                user_id=current_user.id
+
+            )
+
+            db.session.add(budget)
+
+            flash(
+                "Budget created successfully!",
+                "success"
+            )
+
+        db.session.commit()
+
+    return redirect(url_for("dashboard"))
 
 # ----------------------------
 # Run App

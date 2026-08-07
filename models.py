@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,date
 
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -25,6 +25,11 @@ class User(UserMixin, db.Model):
         lazy=True
     )
 
+    budgets = db.relationship(
+        "Budget",
+        backref="user",
+        lazy=True
+    )
     def __repr__(self):
         return f"<User {self.email}>"
 
@@ -45,6 +50,33 @@ class Transaction(db.Model):
 
     description = db.Column(db.String(255), nullable=True)
     custom_category = db.Column(db.String(100), nullable=True)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+class Budget(db.Model):
+
+    __tablename__ = "budgets"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    budget_month = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    amount = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     user_id = db.Column(
         db.Integer,

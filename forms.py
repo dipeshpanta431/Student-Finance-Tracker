@@ -146,3 +146,20 @@ class TransactionForm(FlaskForm):
             raise ValidationError(
                 "Please specify the category."
             )
+
+class BudgetForm(FlaskForm):
+
+    budget_month = StringField(
+        "Budget Month",
+        validators=[DataRequired()]
+    )
+
+    amount = FloatField(
+        "Monthly Budget (NPR)",
+        validators=[
+            DataRequired(),
+            NumberRange(min=1)
+        ]
+    )
+
+    submit = SubmitField("Save Budget")

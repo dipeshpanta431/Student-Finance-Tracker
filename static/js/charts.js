@@ -2,10 +2,12 @@ const {
     income,
     expense,
     categoryLabels,
-    categoryTotals
+    categoryTotals,
+    monthLabels,
+    monthlyIncome,
+    monthlyExpense
 } = window.dashboardCharts;
-
-
+const currentMonthName = window.dashboardCharts.currentMonthName;
 const ctx = document.getElementById("incomeExpenseChart");
 if (ctx) {
     new Chart(ctx, {
@@ -212,4 +214,141 @@ if (pieCtx) {
         }
 
     });
+}
+const trendCtx = document.getElementById("dailyTrendChart");
+
+if (trendCtx && dailyLabels.length > 0) {
+
+    new Chart(trendCtx, {
+
+        type: "line",
+
+        data: {
+
+            labels: dailyLabels,
+
+            datasets: [
+
+                {
+                    label: "Income",
+
+                    data: dailyIncome,
+
+                    borderColor: "#22c55e",
+
+                    backgroundColor: "rgba(34,197,94,0.15)",
+
+                    tension: 0.35,
+
+                    fill: false,
+
+                    pointRadius: 4,
+
+                    pointHoverRadius: 6
+                },
+
+                {
+                    label: "Expense",
+
+                    data: dailyExpense,
+
+                    borderColor: "#ef4444",
+
+                    backgroundColor: "rgba(239,68,68,0.15)",
+
+                    tension: 0.35,
+
+                    fill: false,
+
+                    pointRadius: 4,
+
+                    pointHoverRadius: 6
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            interaction: {
+
+                mode: "index",
+
+                intersect: false
+
+            },
+
+            plugins: {
+
+                tooltip: {
+
+                    callbacks: {
+
+                       title: function(context) {
+                            return currentMonthName + " " + context[0].label;
+                        },
+
+                        label: function(context) {
+
+                            return context.dataset.label +
+                                   ": NPR " +
+                                   Number(context.raw).toLocaleString();
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text: "Day"
+
+                    }
+
+                },
+
+                y: {
+
+                    beginAtZero: true,
+
+                    title: {
+
+                        display: true,
+
+                        text: "NPR"
+
+                    },
+
+                    ticks: {
+
+                        callback: function(value) {
+
+                            return Number(value).toLocaleString();
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
 }
