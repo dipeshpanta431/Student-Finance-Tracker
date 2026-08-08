@@ -60,25 +60,23 @@ def get_budget_status(percentage):
     else:
         return "Over Budget", "bg-danger"
 
-def get_budget_message(
-    budget_amount,
-    current_month_expense,
-    remaining_budget
-):
+def get_budget_message(budget_amount, current_month_expense, remaining_budget):
 
     if budget_amount == 0:
-        return "Set a budget to start tracking your monthly spending."
+        return "Set a monthly budget to start tracking your spending."
 
-    if remaining_budget > 0:
+    budget_percentage = (current_month_expense / budget_amount) * 100
+
+    if budget_percentage < 80:
+        return "You're on track. Keep managing your spending wisely this month."
+
+    elif budget_percentage <= 100:
+        return "You're getting close to your monthly budget limit."
+
+    else:
+        exceeded_amount = abs(remaining_budget)
+
         return (
-            f"You still have NPR {remaining_budget:,.2f} "
-            "remaining this month."
+            f"You've exceeded your monthly budget by "
+            f"NPR {exceeded_amount:,.2f}."
         )
-
-    if remaining_budget == 0:
-        return "You've exactly reached your monthly budget."
-
-    return (
-        f"You have exceeded your budget by "
-        f"NPR {abs(remaining_budget):,.2f}."
-    )

@@ -141,16 +141,20 @@ def dashboard():
     form = TransactionForm()
     budget_form = BudgetForm()
     search = request.args.get("search", "")
+    scroll_position = request.args.get("scroll_position", "0")
     transaction_type = request.args.get("type", "")
     category = request.args.get("category", "")
     payment_mode = request.args.get("payment_mode", "")
     from_date = request.args.get("from_date", "")
-    to_date = request.args.get("to_date", "")   
+    to_date = request.args.get("to_date", "")  
+
 
     transactions = Transaction.query.filter_by(
         user_id=current_user.id
     )
-
+    all_transactions = Transaction.query.filter_by(
+        user_id=current_user.id
+    )
     if search:
         transactions = transactions.filter(
             or_(
@@ -212,7 +216,7 @@ def dashboard():
     ).all()
 
     total_income, total_expense, balance = \
-    calculate_dashboard_totals(transactions)
+    calculate_dashboard_totals(all_transactions)
 
    
     if transaction_type == "Income":
@@ -267,7 +271,7 @@ def dashboard():
 
         transaction.amount
 
-        for transaction in transactions
+        for transaction in all_transactions
 
         if (
             transaction.transaction_type == "Expense"
@@ -338,7 +342,8 @@ def dashboard():
         progress_width=progress_width,
         budget_status=budget_status,
         progress_color=progress_color,
-        budget_message=budget_message
+        budget_message=budget_message,
+        scroll_position=scroll_position
       
     )
 

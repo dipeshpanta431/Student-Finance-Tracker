@@ -69,7 +69,9 @@
 <div class="card shadow-sm mb-5">
 
     <div class="card-header">
-        <h5 class="mb-0">💰 Monthly Budget</h5>
+        <h5 class="mb-0">
+            💰 Monthly Budget — {{ current_month.strftime("%B %Y") }}
+        </h5>
     </div>
 
     <div class="card-body">
@@ -78,44 +80,54 @@
 
             <div class="row">
 
-                <div class="col-md-3">
-                    <strong>Month</strong><br>
-                    {{ current_budget.budget_month.strftime("%B %Y") }}
+                <div class="col-md-4 text-center">
+                    <div class="text-muted small">Budget</div>
+
+                    <div class="fw-bold fs-4">
+                        NPR {{ "{:,.2f}".format(budget_amount) }}
+                    </div>
                 </div>
 
-                <div class="col-md-3">
-                    <strong>Budget</strong><br>
-                    NPR {{ "{:,.2f}".format(budget_amount) }}
+               <div class="col-md-4 text-center">
+                    <div class="text-muted small">Spent</div>
+
+                    <div class="fw-bold fs-4 text-danger">
+                        NPR {{ "{:,.2f}".format(current_month_expense) }}
+                    </div>
                 </div>
 
-                <div class="col-md-3">
-                    <strong>Spent</strong><br>
-                    NPR {{ "{:,.2f}".format(current_month_expense) }}
-                </div>
+                <div class="col-md-4 text-center">
 
-                <div class="col-md-3">
-                    <strong>Remaining</strong><br>
+                    <div class="text-muted small">
+                        {% if remaining_budget >= 0 %}
+                            Remaining
+                        {% else %}
+                            Over Budget
+                        {% endif %}
+                    </div>
 
                     {% if remaining_budget >= 0 %}
-                        <span class="text-success">
+                        <div class="fw-bold fs-4 text-success">
                             NPR {{ "{:,.2f}".format(remaining_budget) }}
-                        </span>
+                        </div>
                     {% else %}
-                        <span class="text-danger">
+                        <div class="fw-bold fs-4 text-danger">
                             NPR {{ "{:,.2f}".format(remaining_budget|abs) }}
-                        </span>
+                        </div>
                     {% endif %}
 
                 </div>
-                <hr>
+                <hr class="my-4">
 
-                <div class="mt-3">
+                <div>
 
-                    <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
 
-                        <strong>Budget Usage</strong>
+                        <span class="fw-semibold">Budget Usage</span>
 
-                        <span>{{ "%.1f"|format(budget_percentage) }}%</span>
+                        <span class="fw-bold">
+                            {{ "%.1f"|format(budget_percentage) }}%
+                        </span>
 
                     </div>
 
@@ -126,13 +138,13 @@
                             role="progressbar"
                             style="width: {{ progress_width }}%;"
                         >
-                           {{ "%.0f"|format(progress_width) }}%
                         </div>
 
                     </div>
-                    <div class="mt-3">
+                    <div class="mt-4">
 
                         <span class="badge
+                            px-3 py-2
                             {% if progress_color == 'bg-success' %}
                                 text-bg-success
                             {% elif progress_color == 'bg-warning' %}
@@ -154,7 +166,7 @@
 
                         <button
                             type="button"
-                            class="btn btn-outline-primary"
+                            class="btn btn-outline-primary "
                             id="editBudgetBtn"
                         >
                             ✏️ Edit Budget
@@ -178,13 +190,20 @@
 
                                 <div class="col-md-4">
 
-                                    {{ budget_form.budget_month.label(class="form-label") }}
+                                    <label class="form-label">Budget Month</label>
 
-                                    {{ budget_form.budget_month(
-                                        class="form-control",
-                                        type="month",
-                                        value=current_budget.budget_month.strftime("%Y-%m")
-                                    ) }}
+                                    <input
+                                        type="month"
+                                        class="form-control"
+                                        value="{{ current_budget.budget_month.strftime('%Y-%m') }}"
+                                        readonly
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="budget_month"
+                                        value="{{ current_budget.budget_month.strftime('%Y-%m') }}"
+                                    >
 
                                 </div>
 
@@ -271,10 +290,21 @@
     </div>
 
 </div>
-<div class="card shadow-sm mb-5">
+
+<div class="card shadow-sm mb-5" >
     <div class="card-body">
 
-        <form method="GET" action="{{ url_for('dashboard') }}">
+        <form
+            method="GET"
+            action="{{ url_for('dashboard') }}"
+            id="transactionFilterForm"
+        >
+            <input
+                type="hidden"
+                name="scroll_position"
+                id="scrollPosition"
+                value=""
+            >
 
             <div class="row g-2 align-items-center">
                 
@@ -432,179 +462,182 @@
 
     </div>
 </div>
- <h4 class="mb-4">
-    📊 Financial Insights
-    </h4>
-<div class="row g-4 mb-5">
-   
+<div id="filteredDashboardContent">
+        <h4 class="mb-4">
+            📊 Financial Insights
+            </h4>
+        <div class="row g-4 mb-5">
+        
 
-    <!-- Income vs Expense -->
-    {% if transactions %}
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">📊 Income vs Expense</h5>
+            <!-- Income vs Expense -->
+            {% if transactions %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">📊 Income vs Expense</h5>
+                        </div>
+
+                        <div class="card-body" style="height:320px;">
+                            <canvas id="incomeExpenseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Expense by Category -->
+            {% if transactions %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">🥧 Expense by Category</h5>
+                        </div>
+
+                        <div class="card-body" style="height:320px;">
+                            <canvas id="expenseCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="col-12 mb-5">
+
+            
+
+            <div class="card shadow-sm">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Daily Income vs Expense — {{ current_month.strftime('%B %Y') }}
+                </h5>
+            </div>
+
+            <div class="card-body" style="height:350px;">
+                <canvas id="dailyTrendChart"></canvas>
+            </div>
+
+        </div>
+
+        </div>
+
+        <h4 class="mb-4">
+            📋 Recent Transactions
+        </h4>
+        {% if transactions %}
+
+            <table class="table table-striped table-bordered mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Payment Mode</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.date }}</td>
+                        <td>{{ transaction.transaction_type }}</td>
+                        <td>
+                            {% if transaction.category == "Other" and transaction.custom_category %}
+                                {{ transaction.custom_category }}
+                            {% else %}
+                                {{ transaction.category }}
+                            {% endif %}
+                        </td>
+                        <td>NPR {{ transaction.amount }}</td>
+                        <td>{{ transaction.payment_mode }}</td>
+                        <td>{{ transaction.description }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}"
+                            class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-transaction-id="{{ transaction.id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+
+            {% if search %}
+
+                <div class="alert alert-warning mt-4">
+                    No transactions found matching
+                    <strong>"{{ search }}"</strong>.
                 </div>
 
-                <div class="card-body" style="height:320px;">
-                    <canvas id="incomeExpenseChart"></canvas>
+            {% else %}
+
+                <div class="alert alert-info mt-4">
+                    No transactions found. Click <strong>Add Transaction</strong> to create your first one.
+                </div>
+
+            {% endif %}
+        {% endif %}
+
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Transaction</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <p>
+                            Are you sure you want to delete this transaction?
+                        </p>
+
+                        <p class="text-danger mb-0">
+                            This action cannot be undone.
+                        </p>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                    <a href="#"
+                        id="confirmDeleteBtn"
+                        class="btn btn-danger">
+                            Delete
+                        </a>
+
+                    </div>
+
                 </div>
             </div>
+
         </div>
-    {% endif %}
-
-    <!-- Expense by Category -->
-    {% if transactions %}
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">🥧 Expense by Category</h5>
-                </div>
-
-                <div class="card-body" style="height:320px;">
-                    <canvas id="expenseCategoryChart"></canvas>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-</div>
-
-<div class="col-12 mb-5">
-
-    
-
-    <div class="card shadow-sm">
-
-    <div class="card-header">
-        <h5 class="mb-0">
-            Daily Income vs Expense — {{ current_month.strftime('%B %Y') }}
-        </h5>
     </div>
-
-    <div class="card-body" style="height:350px;">
-        <canvas id="dailyTrendChart"></canvas>
-    </div>
-
-</div>
-
-</div>
-
-<h4 class="mb-4">
-    📋 Recent Transactions
-</h4>
-{% if transactions %}
-
-    <table class="table table-striped table-bordered mt-4">
-        <thead class="table-dark">
-            <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Payment Mode</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.date }}</td>
-                <td>{{ transaction.transaction_type }}</td>
-                <td>
-                    {% if transaction.category == "Other" and transaction.custom_category %}
-                        {{ transaction.custom_category }}
-                    {% else %}
-                        {{ transaction.category }}
-                    {% endif %}
-                </td>
-                <td>NPR {{ transaction.amount }}</td>
-                <td>{{ transaction.payment_mode }}</td>
-                <td>{{ transaction.description }}</td>
-                <td>
-                    <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}"
-                    class="btn btn-sm btn-outline-secondary me-1">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
-
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-outline-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteModal"
-                        data-transaction-id="{{ transaction.id }}">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-{% else %}
-
-    {% if search %}
-
-        <div class="alert alert-warning mt-4">
-            No transactions found matching
-            <strong>"{{ search }}"</strong>.
-        </div>
-
-    {% else %}
-
-        <div class="alert alert-info mt-4">
-            No transactions found. Click <strong>Add Transaction</strong> to create your first one.
-        </div>
-
-    {% endif %}
-{% endif %}
-
-<div class="modal fade" id="deleteModal" tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Transaction</h5>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <p>
-                    Are you sure you want to delete this transaction?
-                </p>
-
-                <p class="text-danger mb-0">
-                    This action cannot be undone.
-                </p>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                    Cancel
-                </button>
-
-            <a href="#"
-                id="confirmDeleteBtn"
-                class="btn btn-danger">
-                    Delete
-                </a>
-
-            </div>
-
-        </div>
-    </div>
-
 </div>
 
 <script>
@@ -627,6 +660,7 @@
 
 {% endblock %}
 {% block scripts %}
+
 <script>
 window.dashboardCharts = {
 
@@ -647,6 +681,40 @@ window.dashboardCharts = {
     const dailyIncome = {{ daily_income_data | tojson }};
     const dailyExpense = {{ daily_expense_data | tojson }};
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const filterForm =
+        document.getElementById("transactionFilterForm");
+
+    const scrollInput =
+        document.getElementById("scrollPosition");
+
+    if (filterForm && scrollInput) {
+
+        filterForm.addEventListener("submit", function () {
+
+            scrollInput.value = window.scrollY;
+
+        });
+
+    }
+
+    const savedPosition =
+        {{ scroll_position|default(0)|int }};
+
+    if (savedPosition > 0) {
+
+        window.scrollTo(
+            0,
+            savedPosition
+        );
+
+    }
+
+});
+</script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script src="{{ url_for('static', filename='js/budget.js') }}"></script>
+
 {% endblock %}
