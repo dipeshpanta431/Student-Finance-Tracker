@@ -546,7 +546,7 @@
 
             <!-- Income vs Expense -->
             {% if transactions %}
-                <div class="col-lg-6 mb-4">
+                <div class="{% if transaction_type == '' %}col-lg-4{% else %}col-lg-6{% endif %} mb-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-header">
                             <h5 class="mb-0">📊 Income vs Expense</h5>
@@ -561,7 +561,7 @@
 
             <!-- Expense by Category -->
         {% if transactions and transaction_type != "Income" %}
-            <div class="col-lg-6 mb-4">
+            <div class="{% if transaction_type == '' %}col-lg-4{% else %}col-lg-6{% endif %} mb-4">
                 <div class="card shadow-sm h-100">
 
                     <div class="card-header">
@@ -576,8 +576,8 @@
             </div>
         {% endif %}
             <!-- Income by Category -->
-        {% if transactions %}
-            <div class="col-lg-6 mb-4">
+        {% if transaction_type != "Expense" %}
+            <div class="{% if transaction_type == '' %}col-lg-4{% else %}col-lg-6{% endif %} mb-4">
                 <div class="card shadow-sm h-100">
 
                     <div class="card-header">
