@@ -2,14 +2,16 @@ from datetime import date
 
 def get_budget_status(percentage):
 
-    if percentage < 80:
+    if percentage < 75:
         return "On Track", "bg-success"
+
+    elif percentage < 90:
+        return "Approaching Limit", "bg-warning"
 
     elif percentage <= 100:
         return "Near Limit", "bg-warning"
 
     return "Over Budget", "bg-danger"
-
 
 def calculate_budget_progress(budget_amount, expense):
 
@@ -67,16 +69,20 @@ def get_budget_message(budget_amount, current_month_expense, remaining_budget):
 
     budget_percentage = (current_month_expense / budget_amount) * 100
 
-    if budget_percentage < 80:
+    if budget_percentage < 75:
         return "You're on track. Keep managing your spending wisely this month."
 
+    elif budget_percentage < 90:
+        return "You've used most of your budget. Consider reducing unnecessary spending."
+
     elif budget_percentage <= 100:
-        return "You're getting close to your monthly budget limit."
+        return "You're very close to your monthly budget limit. Spend carefully."
 
     else:
         exceeded_amount = abs(remaining_budget)
 
         return (
             f"You've exceeded your monthly budget by "
-            f"NPR {exceeded_amount:,.2f}."
+            f"NPR {exceeded_amount:,.2f}. "
+            f"Consider reducing your spending for the rest of the month."
         )

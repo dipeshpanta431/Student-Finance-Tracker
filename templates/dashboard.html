@@ -159,9 +159,67 @@
                         </span>
 
                     </div>
-                    <p class="text-muted mt-3 mb-0">
-                        {{ budget_message }}
-                    </p>
+                 <div
+                        id="budgetAlert"
+                        class="alert
+                            {% if budget_status == 'On Track' %}
+                                alert-success
+                            {% elif budget_status == 'Approaching Limit' %}
+                                alert-warning
+                            {% elif budget_status == 'Near Limit' %}
+                                alert-warning
+                            {% elif budget_status == 'Over Budget' %}
+                                alert-danger
+                            {% else %}
+                                alert-secondary
+                            {% endif %}
+                            mt-3 mb-0"
+                        role="alert"
+                    >
+                        <strong>
+                            {% if budget_status == 'On Track' %}
+                                🟢 Budget On Track
+                            {% elif budget_status == 'Approaching Limit' %}
+                                🟡 Budget Alert
+                            {% elif budget_status == 'Near Limit' %}
+                                🟠 Near Budget Limit
+                            {% elif budget_status == 'Over Budget' %}
+                                🔴 Budget Exceeded
+                            {% else %}
+                                ℹ️ Budget Information
+                            {% endif %}
+                        </strong>
+
+                        <div class="mt-1">
+
+                            {% if budget_status == "Over Budget" %}
+
+                                You've exceeded your monthly budget by
+                                <strong>NPR {{ "{:,.2f}".format((current_month_expense - budget_amount)|abs) }}</strong>.
+
+                            {% elif budget_status == "Near Limit" %}
+
+                                You have only
+                                <strong>NPR {{ "{:,.2f}".format(remaining_budget) }}</strong>
+                                remaining for this month.
+
+                            {% elif budget_status == "Approaching Limit" %}
+
+                                You have
+                                <strong>NPR {{ "{:,.2f}".format(remaining_budget) }}</strong>
+                                remaining. Consider reducing unnecessary spending.
+
+                            {% else %}
+
+                                You're on track with your spending.
+                                You have
+                                <strong>NPR {{ "{:,.2f}".format(remaining_budget) }}</strong>
+                                remaining.
+
+                            {% endif %}
+
+                        </div>
+                    </div>
                     <div class="mt-4">
 
                         <button
@@ -342,7 +400,10 @@
 
                 <!-- Category -->
                 <div class="col-auto">
-                    <select name="category" class="form-select">
+                  <select
+                        name="category"
+                        id="categoryFilter"
+                        class="form-select">
 
                         <option value=""
                             {% if category == "" %}selected{% endif %}>
@@ -350,7 +411,8 @@
                         </option>
 
                         {% for value, label in categories %}
-                            <option value="{{ value }}"
+                            <option
+                                value="{{ value }}"
                                 {% if category == value %}selected{% endif %}>
                                 {{ label }}
                             </option>
@@ -389,13 +451,26 @@
                 </div>
 
                 <!-- Clear Button -->
-                <div class="col-auto">
+               
+                <div class="col-auto d-flex gap-2">
+
                     <a
                         href="{{ url_for('dashboard') }}"
                         class="btn btn-outline-secondary">
                         <i class="bi bi-x-lg"></i>
                     </a>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-success"
+                        id="exportCsvButton">
+                        📥 Export CSV
+                    </button>
+
                 </div>
+
+
+              
                 <div class="col-auto">
                     <button
                         class="btn btn-outline-secondary"
@@ -485,20 +560,37 @@
             {% endif %}
 
             <!-- Expense by Category -->
-            {% if transactions %}
-                <div class="col-lg-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">🥧 Expense by Category</h5>
-                        </div>
+        {% if transactions and transaction_type != "Income" %}
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100">
 
-                        <div class="card-body" style="height:320px;">
-                            <canvas id="expenseCategoryChart"></canvas>
-                        </div>
+                    <div class="card-header">
+                        <h5 class="mb-0">🥧 Expense by Category</h5>
                     </div>
-                </div>
-            {% endif %}
 
+                    <div class="card-body" style="height:320px;">
+                        <canvas id="expenseCategoryChart"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
+            <!-- Income by Category -->
+        {% if transactions %}
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">💰 Income by Category</h5>
+                    </div>
+
+                    <div class="card-body" style="height:320px;">
+                        <canvas id="incomeCategoryChart"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        {% endif %}
         </div>
 
         <div class="col-12 mb-5">
@@ -669,12 +761,13 @@ window.dashboardCharts = {
 
     categoryLabels: {{ category_labels | tojson }},
     categoryTotals: {{ category_totals | tojson }},
+
+    incomeCategoryLabels: {{ income_category_labels | tojson }},
+    incomeCategoryTotals: {{ income_category_totals | tojson }},
+
     currentMonthName: {{ current_month.strftime("%B") | tojson }}
 
-   
 };
-
-
 </script>
 <script>
     const dailyLabels = {{ daily_labels | tojson }};
@@ -711,6 +804,34 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     }
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const exportButton =
+        document.getElementById("exportCsvButton");
+
+    if (!exportButton) {
+        return;
+    }
+
+    exportButton.addEventListener("click", function () {
+
+        const currentParams =
+            new URLSearchParams(window.location.search);
+
+        currentParams.delete("scroll_position");
+
+        const exportUrl =
+            "{{ url_for('export_transactions') }}" +
+            "?" +
+            currentParams.toString();
+
+        window.location.href = exportUrl;
+
+    });
 
 });
 </script>

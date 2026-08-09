@@ -2,8 +2,10 @@ from datetime import datetime,date
 from collections import defaultdict
 from calendar import monthrange     
 
+import csv
+from io import StringIO
 
-from flask import Flask, render_template, redirect, request, url_for, flash
+from flask import Flask, render_template, redirect, request, url_for, flash, Response
 from flask_login import (
     LoginManager,
     login_user,
@@ -209,11 +211,26 @@ def dashboard():
         .group_by(Transaction.category)
         .all()
     )
+    income_by_category = (
+        transactions
+        .filter(Transaction.transaction_type == "Income")
+        .with_entities(
+            Transaction.category,
+            func.sum(Transaction.amount).label("total")
+        )
+        .group_by(Transaction.category)
+        .all()
+    )
     category_labels, category_totals = \
-    prepare_category_chart_data(expense_by_category)
+        prepare_category_chart_data(expense_by_category)
+
+    income_category_labels, income_category_totals = \
+        prepare_category_chart_data(income_by_category)
+
     transactions = transactions.order_by(
         Transaction.date.desc()
     ).all()
+
 
     total_income, total_expense, balance = \
     calculate_dashboard_totals(all_transactions)
@@ -343,7 +360,10 @@ def dashboard():
         budget_status=budget_status,
         progress_color=progress_color,
         budget_message=budget_message,
-        scroll_position=scroll_position
+        scroll_position=scroll_position,
+        income_by_category=income_by_category,
+        income_category_labels=income_category_labels,
+    income_category_totals=income_category_totals
       
     )
 
@@ -504,6 +524,115 @@ def save_budget():
         db.session.commit()
 
     return redirect(url_for("dashboard"))
+
+#-----------------
+#Export CSV
+#-----------------
+@app.route("/transactions/export")
+@login_required
+def export_transactions():
+    search = request.args.get("search", "")
+    transaction_type = request.args.get("type", "")
+    category = request.args.get("category", "")
+    payment_mode = request.args.get("payment_mode", "")
+    from_date = request.args.get("from_date", "")
+    to_date = request.args.get("to_date", "")
+
+    transactions = Transaction.query.filter_by(
+        user_id=current_user.id
+    )
+
+    if search:
+        transactions = transactions.filter(
+            or_(
+                Transaction.category.ilike(f"%{search}%"),
+                Transaction.description.ilike(f"%{search}%"),
+                Transaction.custom_category.ilike(f"%{search}%"),
+                Transaction.payment_mode.ilike(f"%{search}%")
+            )
+        )
+
+    if transaction_type:
+        transactions = transactions.filter(
+            Transaction.transaction_type == transaction_type
+        )
+
+    if category:
+        transactions = transactions.filter(
+            Transaction.category == category
+        )
+
+    if payment_mode:
+        transactions = transactions.filter(
+            Transaction.payment_mode == payment_mode
+        )
+
+    if from_date:
+        from_date_obj = datetime.strptime(
+            from_date,
+            "%Y-%m-%d"
+        ).date()
+
+        transactions = transactions.filter(
+            Transaction.date >= from_date_obj
+        )
+
+    if to_date:
+        to_date_obj = datetime.strptime(
+            to_date,
+            "%Y-%m-%d"
+        ).date()
+
+        transactions = transactions.filter(
+            Transaction.date <= to_date_obj
+        )
+
+    transactions = transactions.order_by(
+        Transaction.date.desc()
+    ).all()
+
+    output = StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Date",
+        "Type",
+        "Category",
+        "Amount",
+        "Payment Mode",
+        "Description"
+    ])
+
+    for transaction in transactions:
+
+        if (
+            transaction.category == "Other"
+            and transaction.custom_category
+        ):
+            category_name = transaction.custom_category
+        else:
+            category_name = transaction.category
+
+        writer.writerow([
+            transaction.date,
+            transaction.transaction_type,
+            category_name,
+            transaction.amount,
+            transaction.payment_mode,
+            transaction.description or ""
+        ])
+
+    response = Response(
+        output.getvalue(),
+        mimetype="text/csv"
+    )
+
+    response.headers["Content-Disposition"] = (
+        "attachment; filename=expense_transactions.csv"
+    )
+
+    return response
 
 # ----------------------------
 # Run App

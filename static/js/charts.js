@@ -5,7 +5,9 @@ const {
     categoryTotals,
     monthLabels,
     monthlyIncome,
-    monthlyExpense
+    monthlyExpense,
+    incomeCategoryLabels,
+    incomeCategoryTotals
 } = window.dashboardCharts;
 const currentMonthName = window.dashboardCharts.currentMonthName;
 const ctx = document.getElementById("incomeExpenseChart");
@@ -338,6 +340,85 @@ if (trendCtx && dailyLabels.length > 0) {
                         callback: function(value) {
 
                             return Number(value).toLocaleString();
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+const totalIncome = incomeCategoryTotals.reduce(
+    (sum, value) => sum + value,
+    0
+);
+
+const incomePieCtx =
+    document.getElementById("incomeCategoryChart");
+
+const incomePieColors =
+    incomeCategoryLabels.map(category =>
+        categoryColors[category] || "#94a3b8"
+    );
+
+if (incomePieCtx && incomeCategoryTotals.length > 0) {
+
+    new Chart(incomePieCtx, {
+
+        type: "pie",
+
+        data: {
+
+            labels: incomeCategoryLabels,
+
+            datasets: [{
+
+                data: incomeCategoryTotals,
+
+                borderWidth: 2,
+
+                backgroundColor: incomePieColors,
+
+                borderColor: "#ffffff"
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            const value = context.raw;
+
+                            const percentage = totalIncome
+                                ? ((value / totalIncome) * 100).toFixed(1)
+                                : 0;
+
+                            return `${context.label}: ${percentage}% (NPR ${value.toLocaleString()})`;
 
                         }
 
