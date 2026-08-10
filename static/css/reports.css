@@ -1,0 +1,329 @@
+/* =========================================================
+   FINANCIAL REPORTS PAGE
+   ========================================================= */
+
+.reports-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.reports-wrapper {
+    width: 100%;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+    margin-bottom: 3rem;
+}
+
+.page-header h2 {
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #111827;
+}
+
+.page-header p {
+    margin-top: 0.35rem;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.report-section-heading {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+}
+
+.report-section-heading h5 {
+    color: #111827;
+    font-weight: 600;
+}
+
+.report-section-heading p {
+    margin-top: 0.35rem;
+}
+
+.category-section-heading {
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.reports-page .text-muted {
+    color: #64748b !important;
+}
+
+
+/* =========================================================
+   GENERAL CARDS
+   ========================================================= */
+
+.reports-page .card {
+    border: 1px solid #d9dee5;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   FILTER CARD
+   ========================================================= */
+
+.filter-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+
+    margin-bottom: 3rem;
+}
+
+.filter-card .card-body {
+    padding: 0;
+}
+
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-select {
+    min-height: 46px;
+    border: 1px solid #d5dae0;
+    border-radius: 9px;
+
+    padding: 0.6rem 2.5rem 0.6rem 0.85rem;
+
+    color: #1f2937;
+    background-color: #ffffff;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-select:hover {
+    border-color: #b8bec7;
+}
+
+.form-select:focus {
+    border-color: #9ca3af;
+
+    box-shadow:
+        0 0 0 3px rgba(107, 114, 128, 0.12);
+}
+
+
+/* =========================================================
+   GENERATE REPORT BUTTON
+   ========================================================= */
+
+.report-btn {
+    width: auto;
+    min-height: 46px;
+
+    padding: 0.65rem 1.25rem;
+
+    border-radius: 999px !important;
+
+    font-weight: 600;
+    border: none;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.report-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   MONTHLY OVERVIEW
+   ========================================================= */
+
+.summary-income,
+.summary-expense {
+    border-radius: 14px !important;
+}
+
+.summary-income {
+    background-color: #f0fdf4;
+    border-color: #bbf7d0 !important;
+}
+
+.summary-expense {
+    background-color: #fef2f2;
+    border-color: #fecaca !important;
+}
+
+.summary-income .card-body,
+.summary-expense .card-body {
+    padding: 1.5rem;
+}
+
+.summary-income h3,
+.summary-expense h3 {
+    color: #111827;
+    font-weight: 700;
+
+    margin-top: 0.6rem;
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   SPACING BETWEEN MONTHLY OVERVIEW AND CATEGORY INSIGHTS
+   ========================================================= */
+
+.reports-page .row.g-4.mb-4 {
+    margin-bottom: 0 !important;
+}
+
+
+/* =========================================================
+   CATEGORY INSIGHTS
+   ========================================================= */
+
+.category-section-heading {
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+}
+
+
+/* =========================================================
+   CATEGORY CARDS
+   ========================================================= */
+
+.reports-page .card-header {
+    padding: 1rem 1.25rem;
+
+    background-color: #fafafa;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reports-page .card-header h5 {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.reports-page .card-body {
+    padding: 1.25rem;
+}
+
+
+/* =========================================================
+   CATEGORY ROWS
+   ========================================================= */
+
+.category-item {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    min-height: 54px;
+}
+
+.category-item.border-bottom {
+    border-color: #e5e7eb !important;
+}
+
+.category-item .fw-medium {
+    color: #1f2937;
+}
+
+.category-item .fw-semibold {
+    color: #1f2937;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CATEGORY RANK
+   ========================================================= */
+
+.category-rank {
+    width: 32px;
+    min-width: 32px;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    color: #9ca3af;
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+   REMOVE OLD PROGRESS BARS
+   ========================================================= */
+
+.reports-page .progress {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .reports-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+    }
+
+    .page-header {
+        margin-bottom: 2.25rem;
+    }
+
+    .category-section-heading {
+        margin-top: 2.75rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .filter-card {
+        margin-bottom: 2.5rem;
+    }
+
+    .summary-income .card-body,
+    .summary-expense .card-body {
+        padding: 1.25rem;
+    }
+
+    .reports-page .card-header {
+        padding: 0.9rem 1rem;
+    }
+
+    .reports-page .card-body {
+        padding: 1rem;
+    }
+
+    .category-item {
+        padding-top: 0.9rem;
+        padding-bottom: 0.9rem;
+    }
+}

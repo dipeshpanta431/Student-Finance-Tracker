@@ -634,6 +634,139 @@ def export_transactions():
 
     return response
 
+
+
+# -----------------
+# Reports
+# -----------------
+@app.route("/reports")
+@login_required
+def reports():
+
+    current_date = datetime.now()
+
+    selected_month = request.args.get(
+        "month",
+        current_date.month,
+        type=int
+    )
+
+    selected_year = request.args.get(
+        "year",
+        current_date.year,
+        type=int
+    )
+    start_date = date(
+    selected_year,
+    selected_month,
+    1
+    )
+
+    if selected_month == 12:
+        end_date = date(
+            selected_year + 1,
+            1,
+            1
+        )
+    else:
+        end_date = date(
+            selected_year,
+            selected_month + 1,
+            1
+    )
+    monthly_transactions = Transaction.query.filter(
+    Transaction.user_id == current_user.id,
+    Transaction.date >= start_date,
+    Transaction.date < end_date
+    )
+
+    monthly_income = (
+        monthly_transactions
+        .filter(Transaction.transaction_type == "Income")
+        .with_entities(
+            func.sum(Transaction.amount)
+        )
+        .scalar()
+        or 0
+    )
+
+    monthly_expense = (
+        monthly_transactions
+        .filter(Transaction.transaction_type == "Expense")
+        .with_entities(
+            func.sum(Transaction.amount)
+        )
+        .scalar()
+        or 0
+    )
+    top_expense_categories = (
+        monthly_transactions
+        .filter(
+            Transaction.transaction_type == "Expense"
+        )
+        .with_entities(
+            Transaction.category,
+            func.sum(Transaction.amount).label("total")
+        )
+        .group_by(Transaction.category)
+        .order_by(
+            func.sum(Transaction.amount).desc()
+        )
+        .limit(5)
+        .all()
+    )
+    top_income_categories = (
+        monthly_transactions
+        .filter(
+            Transaction.transaction_type == "Income"
+        )
+        .with_entities(
+            Transaction.category,
+            func.sum(Transaction.amount).label("total")
+        )
+        .group_by(Transaction.category)
+        .order_by(
+            func.sum(Transaction.amount).desc()
+        )
+        .limit(5)
+        .all()
+    )
+  
+
+    months = [
+        (1, "January"),
+        (2, "February"),
+        (3, "March"),
+        (4, "April"),
+        (5, "May"),
+        (6, "June"),
+        (7, "July"),
+        (8, "August"),
+        (9, "September"),
+        (10, "October"),
+        (11, "November"),
+        (12, "December")
+    ]
+
+    years = list(range(
+        current_date.year - 5,
+        current_date.year + 1
+    ))
+
+    return render_template(
+        "reports.html",
+        months=months,
+        years=years,
+        selected_month=selected_month,
+        selected_year=selected_year,
+        monthly_income=monthly_income,
+        monthly_expense=monthly_expense,
+        top_expense_categories=top_expense_categories,
+        top_income_categories=top_income_categories
+       
+    )
+
+
 # ----------------------------
 # Run App
 # ----------------------------

@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4 reports-page">
+    <div class="reports-wrapper">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center page-header mb-5">
+            <div>
+                <h2 class="mb-1">📊 Financial Reports</h2>
+                <p class="text-muted mb-0">Analyze your income and expenses.</p>
+            </div>
+        </div>
+        
+        <!-- Report Controls Section -->
+        <div class="report-section-heading">
+            <h5 class="fw-semibold mb-1">Report Period</h5>
+        </div>
+
+        <!-- Report Filters -->
+        <div class="card report-card filter-card mb-5" style="border: none;">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('reports') }}">
+                    <div class="row g-3 align-items-end  mb-3 ">
+       
+     
+
+                        <div class="col-md-2 col-lg-2" >
+                            <label for="month" class="form-label">Month</label>
+                            <select name="month" id="month" class="form-select">
+                                {% for month_number, month_name in months %}
+                                    <option value="{{ month_number }}"
+                                        {% if selected_month == month_number %}selected{% endif %}>
+                                        {{ month_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-lg-2">
+                            <label for="year" class="form-label">Year</label>
+                            <select name="year" id="year" class="form-select">
+                                {% for year_value in years %}
+                                    <option value="{{ year_value }}"
+                                        {% if selected_year == year_value %}selected{% endif %}>
+                                        {{ year_value }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-dark rounded-pill report-btn">
+                                <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                                Generate Report
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+       
+        <!-- Monthly Overview -->
+        <div class="report-section-heading ">
+            <h5 class="fw-semibold mb-1">
+                Monthly Overview
+            </h5>
+
+            <p class="text-muted small mb-0">
+                A quick look at your income and expenses for  <small class="text-muted">
+                                                                    {{ months[selected_month - 1][1] }}
+                                                                </small>
+            </p>
+        </div>
+
+        <div class="row g-4 mb-4 ">
+      
+
+
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-sm  summary-income">
+                   
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center mb-4">
+
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 42px; height: 42px; background-color: #ecfdf5; color: #059669;">
+                                <i class="bi bi-arrow-down-left fs-5"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted small mb-0">
+                                    Total Income
+                                </p>
+
+                                <small class="text-muted">
+                                  for  {{ months[selected_month - 1][1] }} {{ selected_year }}
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <h3 class="mb-0 fw-semibold">
+                            NPR {{ "{:,.2f}".format(monthly_income) }}
+                        </h3>
+
+                    </div>
+                    
+
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-sm  summary-expense mb-3">
+                 
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center mb-3">
+
+                            <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 42px; height: 42px; background-color: #fef2f2; color: #dc2626;">
+                                <i class="bi bi-arrow-up-right fs-5"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted small mb-0">
+                                    Total Expenses
+                                </p>
+
+                               <small class="text-muted">
+                                 for    {{ months[selected_month - 1][1] }} {{ selected_year }}
+                                </small>
+                            </div>
+
+                        </div>
+
+                    <h3 class="mb-0 fw-semibold">
+                        NPR {{ "{:,.2f}".format(monthly_expense) }}
+                    </h3>
+
+                </div>
+                
+
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Category Insights -->
+        <div class="report-section-heading category-section-heading ">
+            <h5 class="fw-semibold mb-1">
+                Category Insights
+            </h5>
+
+            <p class="text-muted small mb-0">
+                Your highest spending and income categories <small class="text-muted">
+                                                                        for  {{ months[selected_month - 1][1] }}
+                                                                     </small>
+            </p>
+        </div>
+        
+
+        <!-- Top 5 Financial Categories -->
+        <div class="row g-4 mb-4">
+
+            <!-- Top Expenses -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            💸 Top Spending
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if top_expense_categories %}
+
+                            {% for category, total in top_expense_categories %}
+
+                                <div class="d-flex align-items-center
+                                            {% if not loop.last %}border-bottom{% endif %}
+                                            py-3">
+
+                                    <div class="category-rank me-3">
+                                        {{ "%02d" | format(loop.index) }}
+                                    </div>
+
+                                    <div class="flex-grow-1">
+                                        <span class="fw-medium">
+                                            {{ category }}
+                                        </span>
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        NPR {{ "{:,.2f}".format(total) }}
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <div class="text-center py-4">
+
+                                <div class="fs-3 mb-2">
+                                    💸
+                                </div>
+
+                                <p class="text-muted mb-0">
+                                    No expense data available for this month.
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Top Income -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            💰 Top Income
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if top_income_categories %}
+
+                            {% for category, total in top_income_categories %}
+
+                                <div class="d-flex align-items-center
+                                            {% if not loop.last %}border-bottom{% endif %}
+                                            py-3">
+
+                                    <div class="category-rank me-3">
+                                        {{ "%02d" | format(loop.index) }}
+                                    </div>
+
+                                    <div class="flex-grow-1">
+                                        <span class="fw-medium">
+                                            {{ category }}
+                                        </span>
+                                    </div>
+
+                                    <div class="fw-semibold">
+                                        NPR {{ "{:,.2f}".format(total) }}
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <div class="text-center py-4">
+
+                                <div class="fs-3 mb-2">
+                                    💰
+                                </div>
+
+                                <p class="text-muted mb-0">
+                                    No income data available for this month.
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

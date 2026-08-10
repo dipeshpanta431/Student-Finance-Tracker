@@ -149,7 +149,7 @@ const categoryColors = {
     "Rent": "#6b7280",
     "Salary": "#22c55e",
     "Allowance": "#14b8a6",
-    "Other": "#94a3b8"
+    "Other": "#352f38"
 };
 
 const pieColors = categoryLabels.map(category =>
