@@ -1,12 +1,11 @@
 /* =========================================================
    FINANCIAL REPORTS PAGE
-   ========================================================= */
+========================================================= */
 
 .reports-page {
     max-width: 1100px;
     margin: 0 auto;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
+    padding: 2.5rem 0 4rem;
 }
 
 .reports-wrapper {
@@ -16,44 +15,47 @@
 
 /* =========================================================
    PAGE HEADER
-   ========================================================= */
+========================================================= */
 
 .page-header {
     margin-bottom: 3rem;
 }
 
 .page-header h2 {
-    font-weight: 700;
-    letter-spacing: -0.4px;
+    margin: 0;
     color: #111827;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .page-header p {
-    margin-top: 0.35rem;
+    margin-top: 0.45rem;
+    color: #64748b;
 }
 
 
 /* =========================================================
    SECTION HEADINGS
-   ========================================================= */
+========================================================= */
 
 .report-section-heading {
-    margin-top: 0;
     margin-bottom: 1.25rem;
 }
 
-.report-section-heading h5 {
+.report-section-heading h5,
+.category-section-heading h5 {
+    margin: 0;
     color: #111827;
     font-weight: 600;
 }
 
 .report-section-heading p {
     margin-top: 0.35rem;
+    color: #64748b;
 }
 
 .category-section-heading {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    margin: 4rem 0 1.5rem;
 }
 
 .reports-page .text-muted {
@@ -63,85 +65,85 @@
 
 /* =========================================================
    GENERAL CARDS
-   ========================================================= */
+========================================================= */
 
 .reports-page .card {
+    background: #ffffff;
     border: 1px solid #d9dee5;
     border-radius: 14px;
-    background: #ffffff;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
     overflow: hidden;
 }
 
 
 /* =========================================================
-   FILTER CARD
-   ========================================================= */
+   REPORT FILTER
+========================================================= */
 
 .filter-card {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
+    margin-bottom: 3.25rem;
 
-    margin-bottom: 3rem;
+    border: 1px solid #d9dee5 !important;
+    background: #ffffff !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04) !important;
 }
 
 .filter-card .card-body {
-    padding: 0;
+    padding: 1.5rem;
 }
 
 
 /* =========================================================
    FORM CONTROLS
-   ========================================================= */
+========================================================= */
 
-.form-label {
-    font-weight: 500;
-    color: #374151;
+.reports-page .form-label {
     margin-bottom: 0.5rem;
+    color: #374151;
+    font-weight: 500;
 }
 
-.form-select {
-    min-height: 46px;
-    border: 1px solid #d5dae0;
-    border-radius: 9px;
+.reports-page .form-select {
+    min-height: 44px;
 
     padding: 0.6rem 2.5rem 0.6rem 0.85rem;
 
     color: #1f2937;
     background-color: #ffffff;
 
+    border: 1px solid #d5dae0;
+    border-radius: 9px;
+
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.form-select:hover {
+.reports-page .form-select:hover {
     border-color: #b8bec7;
 }
 
-.form-select:focus {
-    border-color: #9ca3af;
+.reports-page .form-select:focus {
+    border-color: #64748b;
 
     box-shadow:
-        0 0 0 3px rgba(107, 114, 128, 0.12);
+        0 0 0 3px rgba(100, 116, 139, 0.12);
 }
 
 
 /* =========================================================
    GENERATE REPORT BUTTON
-   ========================================================= */
+========================================================= */
 
 .report-btn {
-    width: auto;
-    min-height: 46px;
+    min-height: 44px;
 
-    padding: 0.65rem 1.25rem;
+    padding: 0.6rem 1.2rem;
 
-    border-radius: 999px !important;
+    border: none;
+    border-radius: 9px !important;
 
     font-weight: 600;
-    border: none;
 
     transition:
         transform 0.2s ease,
@@ -158,60 +160,86 @@
 
 /* =========================================================
    MONTHLY OVERVIEW
-   ========================================================= */
+========================================================= */
 
 .summary-income,
 .summary-expense {
+    min-height: 140px;
+
     border-radius: 14px !important;
+
+    position: relative;
 }
 
+
+/* Subtle accent instead of fully colored cards */
+
 .summary-income {
-    background-color: #f0fdf4;
-    border-color: #bbf7d0 !important;
+    background: #ffffff;
+    border-left: 4px solid #22c55e !important;
 }
 
 .summary-expense {
-    background-color: #fef2f2;
-    border-color: #fecaca !important;
+    background: #ffffff;
+    border-left: 4px solid #ef4444 !important;
 }
+
 
 .summary-income .card-body,
 .summary-expense .card-body {
     padding: 1.5rem;
 }
 
+
+.summary-income p,
+.summary-expense p {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+
 .summary-income h3,
 .summary-expense h3 {
-    color: #111827;
-    font-weight: 700;
+    margin: 0.45rem 0 0;
 
-    margin-top: 0.6rem;
+    color: #111827;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+
+/* Income / expense labels */
+
+.summary-income p {
+    color: #15803d;
+}
+
+.summary-expense p {
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   SECTION SPACING
+========================================================= */
+
+.monthly-overview-section {
     margin-bottom: 0;
 }
 
+.category-insights-section {
+    margin-top: 4rem;
+}
 
-/* =========================================================
-   SPACING BETWEEN MONTHLY OVERVIEW AND CATEGORY INSIGHTS
-   ========================================================= */
-
-.reports-page .row.g-4.mb-4 {
-    margin-bottom: 0 !important;
+.payment-analysis-section {
+    margin-top: 4rem;
 }
 
 
 /* =========================================================
-   CATEGORY INSIGHTS
-   ========================================================= */
-
-.category-section-heading {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
-}
-
-
-/* =========================================================
-   CATEGORY CARDS
-   ========================================================= */
+   CATEGORY & PAYMENT CARDS
+========================================================= */
 
 .reports-page .card-header {
     padding: 1rem 1.25rem;
@@ -222,6 +250,9 @@
 }
 
 .reports-page .card-header h5 {
+    margin: 0;
+
+    color: #111827;
     font-size: 1.05rem;
     font-weight: 600;
 }
@@ -233,13 +264,12 @@
 
 /* =========================================================
    CATEGORY ROWS
-   ========================================================= */
+========================================================= */
 
 .category-item {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
     min-height: 54px;
+
+    padding: 1rem 0;
 }
 
 .category-item.border-bottom {
@@ -258,24 +288,204 @@
 
 /* =========================================================
    CATEGORY RANK
-   ========================================================= */
+========================================================= */
 
 .category-rank {
     width: 32px;
     min-width: 32px;
 
+    color: #94a3b8;
+
     font-size: 0.8rem;
     font-weight: 600;
-
-    color: #9ca3af;
 
     font-variant-numeric: tabular-nums;
 }
 
 
+
+
+.payment-mode-highlight p {
+    margin-top: 0.3rem;
+}
+/* =========================================================
+   PAYMENT MODE ANALYSIS
+========================================================= */
+
+.payment-mode-card {
+    height: 100%;
+    background: #ffffff;
+
+    border: 1px solid #d9dee5 !important;
+    border-radius: 12px !important;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.payment-mode-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #c4cad2 !important;
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.07);
+}
+
+
+/* Card content */
+
+.payment-mode-card .card-body {
+    padding: 1.35rem;
+}
+
+
+/* Ranking */
+
+.payment-mode-rank {
+    color: #94a3b8;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* Most Used badge */
+
+.payment-mode-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 0.3rem 0.65rem;
+
+    border-radius: 999px;
+
+    background: #f1f5f9;
+    color: #475569;
+
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+
+/* Payment mode name */
+
+.payment-mode-card h4 {
+    margin: 1rem 0 0.65rem;
+
+    color: #111827;
+
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+
+/* Amount */
+
+.payment-mode-amount {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+
+/* Percentage */
+
+.payment-mode-card .text-muted {
+    margin-top: 0.35rem;
+
+    color: #64748b !important;
+
+    font-size: 0.9rem;
+}
+
+
+/* Highlight the #1 card subtly */
+
+.payment-mode-card-top {
+    border-color: #94a3b8 !important;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================
+   PAYMENT MODE CARDS
+========================================================= */
+
+.payment-mode-card {
+    height: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #d9dee5 !important;
+    border-radius: 14px !important;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.payment-mode-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #c4cad2 !important;
+
+    box-shadow:
+        0 7px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+.payment-mode-card .card-body {
+    padding: 1.3rem;
+}
+
+
+.payment-mode-rank {
+    color: #94a3b8;
+
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+
+.payment-mode-card h4 {
+    margin-top: 0.75rem;
+
+    color: #111827;
+
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+
+.payment-mode-card .text-muted {
+    color: #64748b !important;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+
+.payment-mode-empty {
+    border-style: dashed !important;
+    background: #fafafa;
+}
+
+
 /* =========================================================
    REMOVE OLD PROGRESS BARS
-   ========================================================= */
+========================================================= */
 
 .reports-page .progress {
     display: none !important;
@@ -283,47 +493,103 @@
 
 
 /* =========================================================
-   RESPONSIVE
-   ========================================================= */
+   RESPONSIVE DESIGN
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .reports-page {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    .category-section-heading {
+        margin-top: 3.5rem;
+    }
+
+    .category-insights-section,
+    .payment-analysis-section {
+        margin-top: 3.5rem;
+    }
+}
+
 
 @media (max-width: 767.98px) {
 
     .reports-page {
-        padding-left: 1rem;
-        padding-right: 1rem;
-
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
+        padding: 1.75rem 1rem 3rem;
     }
+
 
     .page-header {
         margin-bottom: 2.25rem;
     }
 
-    .category-section-heading {
-        margin-top: 2.75rem;
-        margin-bottom: 1.25rem;
+
+    .page-header h2 {
+        font-size: 1.6rem;
     }
+
 
     .filter-card {
         margin-bottom: 2.5rem;
     }
+
+
+    .filter-card .card-body {
+        padding: 1.25rem;
+    }
+
+
+    .report-btn {
+        width: 100%;
+        margin-top: 0.15rem;
+    }
+
+
+    .category-section-heading {
+        margin-top: 3rem;
+        margin-bottom: 1.25rem;
+    }
+
+
+    .category-insights-section,
+    .payment-analysis-section {
+        margin-top: 3rem;
+    }
+
 
     .summary-income .card-body,
     .summary-expense .card-body {
         padding: 1.25rem;
     }
 
+
+    .summary-income h3,
+    .summary-expense h3 {
+        font-size: 1.35rem;
+    }
+
+
     .reports-page .card-header {
         padding: 0.9rem 1rem;
     }
+
 
     .reports-page .card-body {
         padding: 1rem;
     }
 
+
     .category-item {
-        padding-top: 0.9rem;
-        padding-bottom: 0.9rem;
+        padding: 0.9rem 0;
+    }
+
+
+  
+
+
+    .payment-mode-card .card-body {
+        padding: 1.1rem;
     }
 }

@@ -699,6 +699,17 @@ def reports():
         .scalar()
         or 0
     )
+    payment_mode_analysis = (
+        monthly_transactions
+        .filter(Transaction.transaction_type == "Expense")
+        .with_entities(
+            Transaction.payment_mode,
+            func.sum(Transaction.amount)
+        )
+        .group_by(Transaction.payment_mode)
+        .order_by(func.sum(Transaction.amount).desc())
+        .all()
+    )
     top_expense_categories = (
         monthly_transactions
         .filter(
@@ -731,8 +742,22 @@ def reports():
         .limit(5)
         .all()
     )
-  
+    total_payment_mode_expense = sum(
+        total for _, total in payment_mode_analysis
+    )
+    payment_mode_insights = []
 
+    for payment_mode, total in payment_mode_analysis:
+
+        percentage = (
+            (total / total_payment_mode_expense) * 100
+            if total_payment_mode_expense > 0
+            else 0
+        )
+
+        payment_mode_insights.append(
+            (payment_mode, total, percentage)
+        )
     months = [
         (1, "January"),
         (2, "February"),
@@ -762,7 +787,9 @@ def reports():
         monthly_income=monthly_income,
         monthly_expense=monthly_expense,
         top_expense_categories=top_expense_categories,
-        top_income_categories=top_income_categories
+        top_income_categories=top_income_categories,
+        payment_mode_analysis=payment_mode_analysis,
+        payment_mode_insights=payment_mode_insights
        
     )
 
