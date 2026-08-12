@@ -790,7 +790,8 @@ def reports():
         top_income_categories=top_income_categories,
         payment_mode_analysis=payment_mode_analysis,
         payment_mode_insights=payment_mode_insights
-       
+
+        
     )
 
 
