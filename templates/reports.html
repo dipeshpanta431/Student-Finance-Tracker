@@ -366,8 +366,102 @@
             {% endif %}
 
         </div>
+        
+        <!-- ==========================================
+            Financial Summary
+        ========================================== -->
 
+        <div class="category-section-heading mt-5">
+            <h5>📄 Financial Summary</h5>
+            <p class="text-muted mb-0">
+                Overview of your financial activity for {{ months[selected_month-1][1] }} {{ selected_year }}.
+            </p>
+        </div>
 
+        <div class="card financial-summary-card " >
+
+            <div class="card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <div class="summary-item">
+                            <span class="summary-label">Report Period</span>
+                            <h6>{{ months[selected_month-1][1] }} {{ selected_year }}</h6>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Total Income</span>
+                            <h6>NPR {{ "{:,.2f}".format(monthly_income) }}</h6>
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Total Expenses</span>
+                            <h6>NPR {{ "{:,.2f}".format(monthly_expense) }}</h6>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="summary-item">
+                            <span class="summary-label">Highest Expense Category</span>
+
+                            {% if top_expense_categories %}
+                                <h6>{{ top_expense_categories[0][0] }}</h6>
+                            {% else %}
+                                <h6>No data</h6>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Most Used Payment Mode</span>
+
+                            {% if payment_mode_insights %}
+                                <h6>{{ payment_mode_insights[0][0] }}</h6>
+                            {% else %}
+                                <h6>No data</h6>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Generated On</span>
+                            <h6>{{ current_date.strftime("%d %B %Y") }}</h6>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="d-flex justify-content-end gap-2 mb-4 report-actions">
+
+            <button
+                class="btn btn-outline-secondary"
+                onclick="window.print()">
+
+                <i class="bi bi-printer"></i>
+                Print Report
+
+            </button>
+
+           <a
+                href="{{ url_for('download_report',
+                                month=selected_month,
+                                year=selected_year) }}"
+                class="btn btn-primary">
+
+                <i class="bi bi-download"></i>
+                Download PDF
+
+            </a>
+
+        </div>
 
     </div>
 </div>
