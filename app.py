@@ -1287,13 +1287,11 @@ def download_report():
     # --------------------
 
     doc.build(elements)
-
     buffer.seek(0)
 
     # --------------------
     # Send PDF
     # --------------------
-
     return send_file(
         buffer,
         as_attachment=True,
@@ -1308,8 +1306,6 @@ def download_report():
 # Run App
 # ----------------------------
 if __name__ == "__main__":
-
     with app.app_context():
         db.create_all()
-
     app.run(debug=True)
