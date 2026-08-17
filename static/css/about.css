@@ -1,0 +1,740 @@
+
+
+.about-hero{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:20px;
+    padding:60px 0;
+    box-shadow:0 12px 30px rgba(0,0,0,.05);
+}
+
+.about-badge{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:999px;
+    background:#eff6ff;
+    color:#2563eb;
+    font-size:.85rem;
+    font-weight:600;
+    margin-bottom:20px;
+}
+
+.about-title{
+    font-size:3rem;
+    font-weight:700;
+    color:#111827;
+    margin-bottom:20px;
+}
+
+.about-subtitle{
+    color:#64748b;
+    font-size:1.15rem;
+    line-height:1.8;
+    max-width:600px;
+}
+
+.hero-buttons{
+    margin-top:35px;
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.hero-btn{
+    border-radius:999px;
+    padding:12px 24px;
+    font-weight:600;
+}
+
+.hero-graphic{
+    position:relative;
+    height:360px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.hero-circle{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:#eff6ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.hero-circle i{
+    font-size:5.5rem;
+    color:#2563eb;
+}
+
+.floating-card{
+    position:absolute;
+    background:#fff;
+    border-radius:12px;
+    padding:10px 18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    font-weight:600;
+    color:#374151;
+}
+
+.income-card{
+    top:30px;
+    left:40px;
+}
+
+.expense-card{
+    right:20px;
+    top:140px;
+}
+
+.report-card{
+    bottom:35px;
+    left:80px;
+}
+
+/* =========================================================
+PROJECT OVERVIEW
+========================================================= */
+
+.project-overview{
+
+    margin-top:80px;
+
+}
+
+.section-title{
+
+    margin-bottom:28px;
+
+}
+
+.section-title span{
+
+    display:inline-block;
+
+    color:#2563eb;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+    letter-spacing:.8px;
+
+    margin-bottom:12px;
+
+}
+
+.section-title h2{
+
+    color:#111827;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+}
+
+.overview-card{
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    box-shadow:0 8px 24px rgba(0,0,0,.04);
+
+}
+
+.overview-card p{
+
+    color:#64748b;
+
+    font-size:1rem;
+
+    line-height:1.9;
+
+    margin-bottom:20px;
+
+}
+
+.overview-card p:last-child{
+
+    margin-bottom:0;
+
+}
+/* =========================================================
+WHY THIS PROJECT
+========================================================= */
+
+.why-project{
+
+    margin-top:90px;
+
+}
+
+.section-description{
+
+    max-width:700px;
+
+    margin:15px auto 0;
+
+    color:#64748b;
+
+    line-height:1.8;
+
+}
+
+.feature-card{
+
+    height:100%;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:35px 28px;
+
+    text-align:center;
+
+    transition:.3s;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.04);
+
+}
+
+.feature-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+}
+
+.feature-icon{
+
+    width:75px;
+
+    height:75px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin:0 auto 25px;
+
+}
+
+.feature-icon i{
+
+    font-size:2rem;
+
+    color:#2563eb;
+
+}
+
+.feature-card h4{
+
+    color:#111827;
+
+    font-size:1.25rem;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+.feature-card p{
+
+    color:#64748b;
+
+    line-height:1.8;
+
+    margin-bottom:0;
+
+}
+.upcoming-feature{
+    position: relative;
+}
+
+.coming-soon-badge{
+
+    display:inline-block;
+
+    margin-bottom:12px;
+
+    padding:5px 12px;
+
+    background:#e0f2fe;
+
+    color:#0369a1;
+
+    border-radius:999px;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+/* =========================================================
+KEY FEATURES
+========================================================= */
+
+.key-features{
+
+    margin-top:90px;
+
+}
+
+.key-feature-card{
+
+    height:100%;
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+
+    padding:30px 24px;
+
+    text-align:center;
+
+    transition:all .3s ease;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.04);
+
+}
+
+.key-feature-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#2563eb;
+
+    box-shadow:0 15px 35px rgba(37,99,235,.12);
+
+}
+
+.key-feature-card i{
+
+    font-size:2.4rem;
+
+    color:#2563eb;
+
+    margin-bottom:20px;
+
+    display:block;
+
+}
+
+.key-feature-card h5{
+
+    color:#111827;
+
+    font-weight:700;
+
+    margin-bottom:12px;
+
+}
+
+.key-feature-card p{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    margin-bottom:0;
+
+    font-size:.95rem;
+
+}
+
+/* =========================================================
+TECHNOLOGY STACK
+========================================================= */
+
+.technology-stack{
+
+    margin-top:90px;
+
+}
+
+.tech-card{
+
+    height:100%;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:30px 22px;
+
+    text-align:center;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.04);
+
+    transition:.3s;
+
+}
+
+.tech-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#2563eb;
+
+    box-shadow:0 15px 35px rgba(37,99,235,.10);
+
+}
+
+.tech-icon{
+
+    width:70px;
+
+    height:70px;
+
+    margin:0 auto 20px;
+
+    border-radius:50%;
+
+    background:#eff6ff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.tech-icon i{
+
+    font-size:2rem;
+
+    color:#2563eb;
+
+}
+
+.tech-card h5{
+
+    font-weight:700;
+
+    color:#111827;
+
+    margin-bottom:20px;
+
+}
+
+.tech-badges{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:10px;
+
+}
+
+.tech-badges span{
+
+    background:#f3f4f6;
+
+    color:#374151;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:.85rem;
+
+    font-weight:500;
+
+    transition:.2s;
+
+}
+
+.tech-badges span:hover{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+}
+
+/* =========================================================
+DEVELOPER
+========================================================= */
+
+.developer-section{
+
+    margin-top:90px;
+
+}
+
+.developer-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:40px;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    box-shadow:0 6px 20px rgba(0,0,0,.05);
+
+}
+
+.developer-avatar{
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    background:#eff6ff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-shrink:0;
+
+}
+
+.developer-avatar i{
+
+    font-size:5rem;
+
+    color:#2563eb;
+
+}
+
+.developer-info h3{
+
+    color:#111827;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.developer-info h6{
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+
+    font-weight:600;
+
+}
+
+.developer-info p{
+
+    color:#64748b;
+
+    line-height:1.8;
+
+    margin-bottom:0;
+
+}
+
+@media(max-width:768px){
+
+.developer-card{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+}
+
+/* =========================================================
+FUTURE ENHANCEMENTS
+========================================================= */
+
+.future-section{
+
+    margin-top:90px;
+    margin-bottom:80px;
+
+}
+
+.future-card{
+
+    height:100%;
+
+    text-align:center;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:30px 22px;
+
+    transition:.3s;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.04);
+
+}
+
+.future-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#2563eb;
+
+    box-shadow:0 15px 35px rgba(37,99,235,.10);
+
+}
+
+.future-card i{
+
+    font-size:2.5rem;
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+
+    display:block;
+
+}
+
+.future-card h5{
+
+    font-weight:700;
+
+    color:#111827;
+
+    margin-bottom:12px;
+
+}
+
+.future-card p{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    margin-bottom:0;
+
+}
+/* =========================================================
+CLOSING SECTION
+========================================================= */
+
+.about-closing{
+
+    margin-top:100px;
+    padding:80px 20px 40px;
+
+    text-align:center;
+
+    border-top:1px solid #e5e7eb;
+
+}
+
+.about-closing h2{
+
+    color:#111827;
+    font-size:2rem;
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+.about-closing>p{
+
+    max-width:700px;
+
+    margin:0 auto 28px;
+
+    color:#64748b;
+
+    line-height:1.8;
+
+}
+
+.closing-info{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    color:#6b7280;
+
+    font-weight:500;
+
+    margin-bottom:25px;
+
+}
+
+.copyright{
+
+    color:#9ca3af;
+
+    font-size:.9rem;
+
+}
+
+
+
+.about-hero{
+
+    padding:60px 0;
+
+}
+
+.hero-card{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:60px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.05);
+
+}

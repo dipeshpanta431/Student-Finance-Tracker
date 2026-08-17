@@ -2,7 +2,10 @@
 
 
 {% block content %}
-
+{% block styles %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/reports.css') }}">
+{% endblock %}
 <div class="container py-4 reports-page">
     <div class="reports-wrapper">
 

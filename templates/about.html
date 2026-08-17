@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+
+{% block title %}
+About | Student Expense Tracker
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero ">
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+                <span class="about-badge">ABOUT PROJECT</span>
+
+                <h1 class="about-title">
+                    Student Expense Tracker
+                </h1>
+
+                <p class="about-subtitle">
+                    Manage your finances with confidence through expense
+                    tracking, budget management, insightful reports, and
+                    interactive financial visualizations.
+                </p>
+
+                <div class="hero-buttons">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}"
+                           class="btn btn-primary hero-btn">
+                            <i class="bi bi-speedometer2"></i>
+                            Go to Dashboard
+                        </a>
+                    {% endif %}
+
+                    <a href="#features"
+                       class="btn btn-outline-primary hero-btn">
+                        <i class="bi bi-stars"></i>
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="hero-graphic">
+                    <div class="hero-circle">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div class="floating-card income-card">
+                        💰 Income
+                    </div>
+
+                    <div class="floating-card expense-card">
+                        📉 Expense
+                    </div>
+
+                    <div class="floating-card report-card">
+                        📊 Reports
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Project Overview -->
+<section class="project-overview">
+    <div class="container">
+        <div class="section-title">
+
+            <span>PROJECT OVERVIEW</span>
+            <h2>About Student Expense Tracker</h2>
+        </div>
+
+        <div class="overview-card">
+            <p>
+                Student Expense Tracker is a web-based personal financial
+                management application developed to help students efficiently
+                record, organize, and monitor their financial activities.
+                The application provides an easy-to-use platform where users
+                can manage daily income and expenses, create monthly budgets,
+                and analyze financial data through interactive charts and
+                comprehensive reports.
+            </p>
+
+            <p>
+                The system emphasizes simplicity, accessibility, and financial
+                awareness by enabling users to understand their spending
+                behavior, monitor budget utilization, and generate downloadable
+                financial reports. Through its clean interface and analytical
+                tools, the application assists students in making informed
+                financial decisions and developing better money management
+                habits.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Why This Project -->
+<section class="why-project">
+    <div class="container">
+        <div class="section-title text-center">
+            <span>WHY THIS PROJECT</span>
+
+            <h2>Helping Students Build Better Financial Habits</h2>
+
+            <p class="section-description">
+                The application is designed to solve common financial management
+                challenges faced by students through simple, organized, and
+                insightful tools.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+
+            <div class="col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-primary-subtle">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                    <h4>Track Every Transaction</h4>
+
+                    <p>
+                        Record daily income and expenses in one place to maintain
+                        accurate financial records and reduce unnecessary spending.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-success-subtle">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+
+                    <h4>Understand Spending</h4>
+
+                    <p>
+                        Analyze expenses using categories, payment modes, and
+                        graphical reports to identify spending patterns.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-warning-subtle">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+
+                    <h4>Achieve Financial Goals</h4>
+
+                    <p>
+                        Plan monthly budgets, monitor expenditure, and improve
+                        financial discipline through continuous tracking.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="feature-card upcoming-feature">
+                    <div class="feature-icon bg-info-subtle">
+                        <i class="bi bi-robot"></i>
+                    </div>
+
+                    <h4>AI Financial Assistant</h4>
+
+                    <p>
+                        Future AI integration will deliver personalized budgeting
+                        suggestions, spending insights, and intelligent financial
+                        recommendations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-danger-subtle">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+
+                    <h4>Secure Authentication</h4>
+
+                    <p>
+                        User accounts are protected through secure authentication,
+                        ensuring that personal financial records remain private
+                        and accessible only to authorized users.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon bg-secondary-subtle">
+                        <i class="bi bi-phone"></i>
+                    </div>
+
+                    <h4>Responsive Design</h4>
+
+                    <p>
+                        The application is designed to work seamlessly across
+                        desktops, tablets, and mobile devices, providing a
+                        consistent user experience on different screen sizes.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Key Features -->
+<section class="key-features" id="features">
+    <div class="container">
+        <div class="section-title text-center">
+            <span>KEY FEATURES</span>
+
+            <h2>Everything You Need to Manage Your Finances</h2>
+
+            <p class="section-description">
+                Student Expense Tracker provides a complete set of tools to
+                record, monitor, analyze, and manage personal finances efficiently.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-speedometer2"></i>
+                    <h5>Dashboard</h5>
+                    <p>View financial summaries and interactive charts in one place.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-cash-coin"></i>
+                    <h5>Income Management</h5>
+                    <p>Record and organize income from multiple sources.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-wallet2"></i>
+                    <h5>Expense Tracking</h5>
+                    <p>Track daily expenses with categories and payment modes.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-piggy-bank"></i>
+                    <h5>Budget Management</h5>
+                    <p>Create monthly budgets and monitor spending progress.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <h5>Financial Reports</h5>
+                    <p>Generate detailed monthly reports and financial summaries.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-bar-chart"></i>
+                    <h5>Interactive Charts</h5>
+                    <p>Analyze spending trends through visual dashboards.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-credit-card"></i>
+                    <h5>Payment Analysis</h5>
+                    <p>Compare expenses across different payment methods.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-filetype-pdf"></i>
+                    <h5>PDF Export</h5>
+                    <p>Download professionally formatted monthly financial reports.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="key-feature-card">
+                    <i class="bi bi-tags"></i>
+                    <h5>Custom Categories</h5>
+                    <p>Organize transactions using predefined or custom categories.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Technology Stack -->
+<section class="technology-stack">
+    <div class="container">
+        <div class="section-title text-center">
+            <span>TECHNOLOGY STACK</span>
+
+            <h2>Technologies Used</h2>
+
+            <p class="section-description">
+                Student Expense Tracker is built using modern web technologies
+                to provide a secure, responsive, and user-friendly experience.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="bi bi-window"></i>
+                    </div>
+
+                    <h5>Frontend</h5>
+
+                    <div class="tech-badges">
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>Bootstrap 5</span>
+                        <span>JavaScript</span>
+                        <span>Jinja2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+
+                    <h5>Backend</h5>
+
+                    <div class="tech-badges">
+                        <span>Python</span>
+                        <span>Flask</span>
+                        <span>Flask-Login</span>
+                        <span>Flask-WTF</span>
+                        <span>ReportLab</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
+
+                    <h5>Database</h5>
+
+                    <div class="tech-badges">
+                        <span>SQLite</span>
+                        <span>SQLAlchemy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+
+                    <h5>Development</h5>
+
+                    <div class="tech-badges">
+                        <span>VS Code</span>
+                        <span>Git</span>
+                        <span>GitHub</span>
+                        <span>Chrome</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Developer -->
+<section class="developer-section">
+    <div class="container">
+        <div class="section-title text-center">
+            <span>DEVELOPER</span>
+            <h2>Meet the Developer</h2>
+        </div>
+
+        <div class="developer-card">
+            <div class="developer-avatar">
+                <i class="bi bi-person-circle"></i>
+            </div>
+
+            <div class="developer-info">
+                <h3>Dipesh Panta</h3>
+                <h6>Bachelor of Information Management (BIM)</h6>
+
+                <p>
+                    Student Expense Tracker is developed as an academic project
+                    to provide students with a simple and effective way to manage
+                    their personal finances. The project emphasizes usability,
+                    financial awareness, and modern web application development
+                    using the Flask framework.
+                </p>
+            </div>
+    
+        </div>
+    </div>
+</section>
+
+<!-- Future Enhancements -->
+<section class="future-section">
+    <div class="container">
+        <div class="section-title text-center">
+            <span>FUTURE ENHANCEMENTS</span>
+
+            <h2>Future Development Roadmap</h2>
+
+            <p class="section-description">
+                The application will continue to evolve with new features aimed
+                at improving financial management and user experience.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+
+            <div class="col-lg-3 col-md-6">
+                <div class="future-card">
+                    <i class="bi bi-robot"></i>
+                    <h5>AI Assistant</h5>
+                    <p>
+                        Personalized budgeting, spending analysis, and financial
+                        recommendations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="future-card">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <h5>Cloud Backup</h5>
+                    <p>
+                        Synchronize financial records securely across multiple devices.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="future-card">
+                    <i class="bi bi-bell"></i>
+                    <h5>Smart Notifications</h5>
+                    <p>
+                        Receive reminders for budgets, bills, and unusual spending
+                        activities.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="future-card">
+                    <i class="bi bi-phone"></i>
+                    <h5>Mobile Application</h5>
+                    <p>
+                        Develop Android and iOS versions for convenient expense tracking.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Closing Section -->
+<section class="about-closing">
+    <div class="container">
+        <h2>Student Expense Tracker</h2>
+
+        <p>
+            Helping students build better financial habits through smart budgeting,
+            expense tracking, and meaningful financial insights.
+        </p>
+
+        <div class="closing-info">
+            <span>Version 1.0</span>
+            <span>•</span>
+            <span>BIM Academic Project</span>
+            <span>•</span>
+            <span>Tribhuvan University</span>
+        </div>
+
+        <p class="copyright">
+            © 2026 Student Expense Tracker
+            Developed as a Bachelor of Information Management Academic Project.
+        </p>
+    </div>
+</section>
+{% endblock %}

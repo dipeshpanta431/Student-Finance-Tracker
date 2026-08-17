@@ -1302,6 +1302,9 @@ def download_report():
         ),
         mimetype="application/pdf"
     )
+@app.route("/about")
+def about():
+    return render_template("about.html")
 # ----------------------------
 # Run App
 # ----------------------------
