@@ -1,4 +1,4 @@
-# Smart Student Expense Management System
+# Student Finance Tracker
 
 ## 📖 Overview
 

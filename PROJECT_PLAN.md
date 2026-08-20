@@ -1,4 +1,4 @@
-# Smart Student Expense Management System
+# Smart Student Finance Tracker
 
 ## Problem Statement
 
