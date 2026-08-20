@@ -4,6 +4,8 @@
     background:#fff;
     border:1px solid #e5e7eb;
     border-radius:20px;
+    margin: 2rem auto 0;
+    max-width: 1320px;
     padding:60px 0;
     box-shadow:0 12px 30px rgba(0,0,0,.05);
 }
@@ -58,7 +60,9 @@
     width:220px;
     height:220px;
     border-radius:50%;
-    background:#eff6ff;
+    background:radial-gradient(circle at 30% 25%,#dbeafe 0 18%,transparent 19%),linear-gradient(135deg,#eff6ff,#e0f2fe);
+    border:1px solid #bfdbfe;
+    box-shadow:0 18px 30px rgba(37,99,235,.12);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -99,8 +103,7 @@ PROJECT OVERVIEW
 ========================================================= */
 
 .project-overview{
-
-    margin-top:80px;
+    margin-top:90px;
 
 }
 
@@ -587,7 +590,7 @@ FUTURE ENHANCEMENTS
 .future-section{
 
     margin-top:90px;
-    margin-bottom:80px;
+    margin-bottom:0;
 
 }
 
@@ -658,7 +661,7 @@ CLOSING SECTION
 
 .about-closing{
 
-    margin-top:100px;
+    margin-top:90px;
     padding:80px 20px 40px;
 
     text-align:center;
@@ -719,22 +722,44 @@ CLOSING SECTION
 
 
 
-.about-hero{
+@media (max-width: 991.98px) {
+    .about-hero {
+        margin: 1.25rem 1rem 0;
+        padding: 3rem 0;
+    }
 
-    padding:60px 0;
-
+    .hero-graphic {
+        height: 290px;
+        margin-top: 1.5rem;
+    }
 }
 
-.hero-card{
+@media (max-width: 575.98px) {
+    .about-hero {
+        margin: 1rem .75rem 0;
+        border-radius: 16px;
+        padding: 2.5rem 0;
+    }
 
-    background:#fff;
+    .about-title {
+        font-size: 2.2rem;
+    }
 
-    border-radius:20px;
+    .overview-card,
+    .developer-card {
+        padding: 1.5rem;
+    }
 
-    padding:60px;
+    .hero-circle {
+        width: 180px;
+        height: 180px;
+    }
 
-    border:1px solid #e5e7eb;
+    .hero-circle i {
+        font-size: 4.5rem;
+    }
 
-    box-shadow:0 12px 30px rgba(0,0,0,.05);
-
+    .income-card { left: 0; }
+    .expense-card { right: 0; }
+    .report-card { bottom: 0; left: 2rem; }
 }

@@ -2,6 +2,11 @@
    GLOBAL STYLES
 ========================================================= */
 
+html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f8f9fa;
@@ -9,6 +14,50 @@ body {
 
 .navbar-brand {
     font-weight: 700;
+}
+
+.site-navbar {
+    min-height: 68px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.site-navbar .navbar-brand {
+    color: #1f2937;
+    letter-spacing: -0.02em;
+}
+
+.site-navbar .navbar-nav {
+    gap: .25rem;
+}
+
+.site-navbar .nav-link {
+    border-radius: .5rem;
+    color: #4b5563;
+    font-weight: 500;
+    padding: .5rem .75rem;
+}
+
+.site-navbar .nav-link:hover,
+.site-navbar .nav-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.site-navbar .nav-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+@media (max-width: 991.98px) {
+    .site-navbar .navbar-collapse {
+        padding: .75rem 0 .25rem;
+    }
+
+    .site-navbar .nav-actions,
+    .site-navbar .d-flex.align-items-center {
+        margin-top: .75rem;
+    }
 }
 
 

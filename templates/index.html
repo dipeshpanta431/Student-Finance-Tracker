@@ -1,34 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}
-Home
+{% block title %}Home | Student Finance Tracker{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
 
 {% block content %}
-
-<section class="home-hero">
-
-    <div class="container text-center">
-
-        <h1 class="display-4 fw-bold">
-            Smart Student Finance Tracker
-        </h1>
-
-        <p class="lead mt-3">
-
-            Track expenses,
-            manage budgets,
-            achieve your savings goals,
-            and gain AI-powered financial insights.
-
-        </p>
-
-        <a href="#" class="btn btn-success btn-lg mt-3">
-            Get Started
-        </a>
-
+<section class="home-intro">
+    <div class="container">
+        <div class="home-panel">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
+                    <span class="home-label"><i class="bi bi-wallet2"></i> STUDENT FINANCE TRACKER</span>
+                    <h1>Stay on top of your money, every day.</h1>
+                    <p>Record income and expenses, follow your budget, and make better financial decisions with one simple, organized tracker.</p>
+                    <div class="home-actions">
+                        <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('register') }}" class="btn btn-primary btn-lg">
+                            {{ 'Open Dashboard' if current_user.is_authenticated else 'Get Started' }}
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">Log In</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="home-visual" aria-hidden="true">
+                        <div class="visual-circle"><i class="bi bi-piggy-bank"></i></div>
+                        <div class="visual-note note-income"><i class="bi bi-arrow-down-circle-fill"></i><span>Track income</span></div>
+                        <div class="visual-note note-expense"><i class="bi bi-receipt"></i><span>Record expenses</span></div>
+                        <div class="visual-note note-budget"><i class="bi bi-bullseye"></i><span>Meet your budget</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
 </section>
 
+<section class="home-benefits">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4"><article class="benefit-card"><div class="benefit-icon"><i class="bi bi-cash-coin"></i></div><div><h2>Keep records clear</h2><p>Add income and expenses whenever they happen.</p></div></article></div>
+            <div class="col-md-4"><article class="benefit-card"><div class="benefit-icon icon-success"><i class="bi bi-pie-chart"></i></div><div><h2>Understand spending</h2><p>See patterns and categories at a glance.</p></div></article></div>
+            <div class="col-md-4"><article class="benefit-card"><div class="benefit-icon icon-purple"><i class="bi bi-graph-up-arrow"></i></div><div><h2>Build better habits</h2><p>Use budgets and reports to stay on track.</p></div></article></div>
+        </div>
+    </div>
+</section>
+
+<section class="home-next-step">
+    <div class="container">
+        <div class="next-step-card">
+            <div><span class="home-label">READY WHEN YOU ARE</span><h2>Make your next financial decision with confidence.</h2><p>Start with a single transaction and let your financial picture grow from there.</p></div>
+            <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('register') }}" class="btn btn-primary">{{ 'Go to Dashboard' if current_user.is_authenticated else 'Create an Account' }} <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
 {% endblock %}
