@@ -1243,31 +1243,21 @@ def download_report():
             elements.append(
 
                 Paragraph(
-
                     f"<b>{payment_mode}</b> — "
                     f"NPR {total:,.2f} "
                     f"({percentage:.2f}%)",
-
                     styles["Normal"]
-
                 )
-
             )
-
     else:
-
         elements.append(
-
             Paragraph(
-
                 "No payment data found.",
 
-                styles["Normal"]
+             styles["Normal"]
 
             )
-
         )
-
     elements.append(
         Spacer(1,20)
     )
