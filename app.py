@@ -32,6 +32,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 
 # ----------------------------
