@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}AI Insights | Student Finance Tracker{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ai.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="ai-page py-4 py-lg-5">
+    <div class="container">
+        <header class="ai-hero text-center mx-auto mb-5">
+            <span class="ai-badge"><i class="bi bi-stars me-2"></i>SMART FINANCE SUPPORT</span>
+            <h1 class="ai-title mt-3">AI Financial Assistant</h1>
+            <p class="ai-subtitle mb-0">Ask questions about your expenses, budgets, savings, and spending habits.</p>
+        </header>
+
+        <section class="mb-5" aria-labelledby="suggested-questions-title">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
+                <div><p class="section-kicker mb-1">QUICK START</p><h2 id="suggested-questions-title" class="h4 fw-bold mb-0">Suggested questions</h2></div>
+                <small class="text-secondary"><i class="bi bi-cursor-fill me-1"></i>Choose one to begin</small>
+            </div>
+            <div class="row g-3">
+                {% set suggestions = [
+                    ('bi-calendar3', 'bg-primary-subtle text-primary', 'Monthly Summary', 'Review this month', 'Give me a summary of my expenses and income for this month.'),
+                    ('bi-piggy-bank', 'bg-success-subtle text-success', 'Saving Tips', 'Find ways to save', 'What practical saving tips can you suggest based on my spending habits?'),
+                    ('bi-wallet2', 'bg-warning-subtle text-warning-emphasis', 'Budget Recommendation', 'Plan with confidence', 'Recommend a realistic monthly budget based on my financial data.'),
+                    ('bi-bar-chart-line', 'bg-info-subtle text-info-emphasis', 'Spending Analysis', 'Understand patterns', 'Analyze my spending patterns and identify my biggest expense categories.'),
+                    ('bi-exclamation-triangle', 'bg-danger-subtle text-danger', 'Overspending Alert', 'Spot potential risks', 'Am I overspending in any category? Please alert me to areas I should improve.')
+                ] %}
+                {% for icon, color, title, detail, prompt in suggestions %}
+                <div class="col-12 col-sm-6 col-lg">
+                    <button type="button" class="suggestion-card w-100 text-start" data-prompt="{{ prompt }}">
+                        <span class="suggestion-icon {{ color }}"><i class="bi {{ icon }}"></i></span>
+                        <span><strong>{{ title }}</strong><small>{{ detail }}</small></span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="row justify-content-center"><div class="col-xl-10">
+            <section class="chat-panel" aria-label="AI conversation">
+                <div class="chat-panel-header"><div class="d-flex align-items-center gap-3">
+                    <span class="assistant-avatar"><i class="bi bi-stars"></i></span>
+                    <div><h2 class="h5 fw-bold mb-1">Your financial conversation</h2><p class="small text-secondary mb-0">Personalized guidance based on your recorded transactions.</p></div>
+                </div></div>
+
+                {% if response %}
+                <div class="chat-history">
+                    <div class="chat-message user-message"><div class="message-label"><i class="bi bi-person-fill me-1"></i>You</div><div class="message-bubble">{{ request.form.get('question', '') }}</div></div>
+                    <div class="chat-message assistant-message"><div class="message-label"><i class="bi bi-stars me-1"></i>AI Financial Assistant</div><div class="message-bubble">{{ response }}</div></div>
+                </div>
+                {% else %}
+                <div class="empty-chat text-center"><span class="empty-chat-icon"><i class="bi bi-chat-square-text"></i></span><p class="mb-1 fw-semibold">How can I help with your finances?</p><small class="text-secondary">Ask a question below or select a suggested topic above.</small></div>
+                {% endif %}
+
+                <form method="POST" class="ai-question-form">
+                    <label for="aiQuestion" class="form-label fw-semibold">Your question</label>
+                    <textarea id="aiQuestion" name="question" class="form-control ai-textarea" rows="5" placeholder="Ask anything about your finances..." required>{{ request.form.get('question', '') }}</textarea>
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mt-3">
+                        <small class="text-secondary"><i class="bi bi-shield-check me-1"></i>Your response uses your recorded financial data.</small>
+                        <button type="submit" class="btn btn-primary ai-send-button">Send question <i class="bi bi-arrow-up-right ms-1"></i></button>
+                    </div>
+                </form>
+            </section>
+        </div></div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelectorAll('[data-prompt]').forEach(function (card) {
+        card.addEventListener('click', function () {
+            const questionField = document.getElementById('aiQuestion');
+            questionField.value = this.dataset.prompt;
+            questionField.focus();
+        });
+    });
+</script>
+{% endblock %}

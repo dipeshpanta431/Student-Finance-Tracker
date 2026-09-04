@@ -1297,6 +1297,143 @@ def download_report():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+
+from flask import render_template, request
+from flask_login import login_required, current_user
+
+from services.ai_service import ask_gemini
+from models import Transaction
+
+
+
+
+#----------------------------
+# AI Route
+#----------------------------
+@app.route("/ai", methods=["GET", "POST"])
+@login_required
+def ai_insights():
+
+    response = None
+
+    if request.method == "POST":
+
+        question = request.form.get("question")
+
+        transactions = Transaction.query.filter_by(
+            user_id=current_user.id
+        ).all()
+
+        summary = []
+
+        for t in transactions:
+
+            summary.append(
+                f"{t.date} | {t.transaction_type} | {t.category} | {t.amount}"
+            )
+
+        context = "\n".join(summary)
+        total_income = sum(
+            t.amount for t in transactions
+            if t.transaction_type == "Income"
+        )
+        total_expense = sum(
+            t.amount for t in transactions
+            if t.transaction_type == "Expense"
+        )
+        balance = total_income - total_expense
+        from collections import defaultdict
+
+        expense_categories = defaultdict(float)
+
+        for t in transactions:
+            if t.transaction_type == "Expense":
+                expense_categories[t.category] += t.amount
+
+        highest_expense = (
+            max(expense_categories.items(), key=lambda x: x[1])
+            if expense_categories
+            else ("None", 0)
+        )
+        income_categories = defaultdict(float)
+
+        for t in transactions:
+            if t.transaction_type == "Income":
+                income_categories[t.category] += t.amount
+
+        highest_income = (
+            max(income_categories.items(), key=lambda x: x[1])
+            if income_categories
+            else ("None", 0)
+        )
+        prompt = f"""
+        You are an AI Financial Advisor integrated into a Student Expense Tracker.
+
+        Your responsibilities:
+        - Analyze spending behaviour.
+        - Recommend practical savings.
+        - Suggest realistic monthly budgets.
+        - Detect overspending.
+        - Explain spending patterns.
+
+        Rules:
+        - Answer ONLY using the financial information provided.
+        - If information is unavailable, clearly state that.
+        - Do not invent numbers.
+        - Use Nepalese Rupees (NPR).
+        - Keep answers concise and easy to understand.
+
+        IMPORTANT:
+        Always answer using the following format:
+
+        📊 Summary
+        (Brief overview)
+
+        🔍 Key Findings
+        - Bullet point
+        - Bullet point
+        - Bullet point
+
+        💡 Recommendations
+        - Bullet point
+        - Bullet point
+
+        ⚠️ Warnings
+        (Only include this section if there is something important to warn about.)
+
+        ------------------------------------
+
+        Financial Summary
+
+        Total Income:
+        NPR {total_income:.2f}
+
+        Total Expense:
+        NPR {total_expense:.2f}
+
+        Current Balance:
+        NPR {balance:.2f}
+
+        Highest Expense Category:
+        {highest_expense[0]} (NPR {highest_expense[1]:.2f})
+
+        Highest Income Category:
+        {highest_income[0]} (NPR {highest_income[1]:.2f})
+
+        User Question:
+
+        {question}
+        """
+
+        response = ask_gemini(prompt)
+
+    return render_template(
+        "ai/ai.html",
+        response=response
+    )
+
+
 # ----------------------------
 # Run App
 # ----------------------------
