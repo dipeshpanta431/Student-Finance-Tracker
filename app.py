@@ -1,7 +1,7 @@
 from datetime import datetime,date
 from collections import defaultdict
 from calendar import monthrange     
-
+from sqlalchemy import func
 import csv
 from io import StringIO
 
@@ -1302,7 +1302,15 @@ def about():
 from flask import render_template, request
 from flask_login import login_required, current_user
 
-from services.ai_service import ask_gemini
+from services.ai_service import (
+    ask_gemini,
+    build_financial_summary,
+    generate_monthly_summary,
+    generate_saving_tips,
+    generate_budget_recommendation,
+    generate_spending_analysis,
+    generate_overspending_alert
+)
 from models import Transaction
 
 
@@ -1315,118 +1323,127 @@ from models import Transaction
 @login_required
 def ai_insights():
 
+    question = (request.form.get("question") or "").strip()
+    quick_action = request.form.get("quick_action")
+    question_lower = question.lower()
+
+    greetings = {
+        "hi": "Hello! 👋 I'm your AI Financial Assistant. How can I help you today?",
+        "hello": "Hello! 👋 How can I assist you with your finances today?",
+        "hey": "Hey! 😊 Ready to analyze your finances?",
+        "thanks": "You're welcome! 😊",
+        "thank you": "Happy to help! Let me know if you have any other questions.",
+        "bye": "Goodbye! 👋 Have a great day and keep tracking your expenses."
+    }
+
+    if question_lower in greetings:
+        response = greetings[question_lower]
+        return render_template("ai/ai.html", response=response)
+
     response = None
 
     if request.method == "POST":
-
-        question = request.form.get("question")
 
         transactions = Transaction.query.filter_by(
             user_id=current_user.id
         ).all()
 
-        summary = []
+        summary = build_financial_summary(transactions)
 
-        for t in transactions:
+        context = f"""
+Financial Summary
 
-            summary.append(
-                f"{t.date} | {t.transaction_type} | {t.category} | {t.amount}"
+Total Income:
+NPR {summary['total_income']:.2f}
+
+Total Expense:
+NPR {summary['total_expense']:.2f}
+
+Current Balance:
+NPR {summary['balance']:.2f}
+
+Highest Expense Category:
+{summary['highest_expense'][0]} (NPR {summary['highest_expense'][1]:.2f})
+
+Highest Income Category:
+{summary['highest_income'][0]} (NPR {summary['highest_income'][1]:.2f})
+
+Recent Transactions:
+"""
+
+        for transaction in summary["recent_transactions"]:
+            context += (
+                f"\n{transaction['date']} | "
+                f"{transaction['type']} | "
+                f"{transaction['category']} | "
+                f"NPR {transaction['amount']}"
             )
 
-        context = "\n".join(summary)
-        total_income = sum(
-            t.amount for t in transactions
-            if t.transaction_type == "Income"
-        )
-        total_expense = sum(
-            t.amount for t in transactions
-            if t.transaction_type == "Expense"
-        )
-        balance = total_income - total_expense
-        from collections import defaultdict
-
-        expense_categories = defaultdict(float)
-
-        for t in transactions:
-            if t.transaction_type == "Expense":
-                expense_categories[t.category] += t.amount
-
-        highest_expense = (
-            max(expense_categories.items(), key=lambda x: x[1])
-            if expense_categories
-            else ("None", 0)
-        )
-        income_categories = defaultdict(float)
-
-        for t in transactions:
-            if t.transaction_type == "Income":
-                income_categories[t.category] += t.amount
-
-        highest_income = (
-            max(income_categories.items(), key=lambda x: x[1])
-            if income_categories
-            else ("None", 0)
-        )
         prompt = f"""
-        You are an AI Financial Advisor integrated into a Student Expense Tracker.
+You are an AI Financial Advisor integrated into a Student Expense Tracker.
 
-        Your responsibilities:
-        - Analyze spending behaviour.
-        - Recommend practical savings.
-        - Suggest realistic monthly budgets.
-        - Detect overspending.
-        - Explain spending patterns.
+Your responsibilities:
+- Analyze spending behaviour.
+- Recommend practical savings.
+- Suggest realistic monthly budgets.
+- Detect overspending.
+- Explain spending patterns.
 
-        Rules:
-        - Answer ONLY using the financial information provided.
-        - If information is unavailable, clearly state that.
-        - Do not invent numbers.
-        - Use Nepalese Rupees (NPR).
-        - Keep answers concise and easy to understand.
+Rules:
+- Answer ONLY using the financial information provided.
+- If information is unavailable, clearly state that.
+- Do not invent numbers.
+- Use Nepalese Rupees (NPR).
+- Keep answers concise.
+- Use bullet points whenever possible.
 
-        IMPORTANT:
-        Always answer using the following format:
+Always answer using the following format:
 
-        📊 Summary
-        (Brief overview)
+📊 Summary
 
-        🔍 Key Findings
-        - Bullet point
-        - Bullet point
-        - Bullet point
+🔍 Key Findings
 
-        💡 Recommendations
-        - Bullet point
-        - Bullet point
+💡 Recommendations
 
-        ⚠️ Warnings
-        (Only include this section if there is something important to warn about.)
+⚠️ Warnings (only if necessary)
 
-        ------------------------------------
+Maximum response length:
+100 words.
 
-        Financial Summary
+Maximum:
+5 bullet points.
 
-        Total Income:
-        NPR {total_income:.2f}
+Do not explain unnecessary details.
+Be concise.
 
-        Total Expense:
-        NPR {total_expense:.2f}
+------------------------------------
 
-        Current Balance:
-        NPR {balance:.2f}
+{context}
 
-        Highest Expense Category:
-        {highest_expense[0]} (NPR {highest_expense[1]:.2f})
+------------------------------------
 
-        Highest Income Category:
-        {highest_income[0]} (NPR {highest_income[1]:.2f})
+User Question:
 
-        User Question:
+{question}
+"""
 
-        {question}
-        """
+        if quick_action == "summary":
+            response = generate_monthly_summary(summary)
 
-        response = ask_gemini(prompt)
+        elif quick_action == "saving":
+            response = generate_saving_tips(summary)
+
+        elif quick_action == "budget":
+            response = generate_budget_recommendation(summary)
+
+        elif quick_action == "analysis":
+            response = generate_spending_analysis(summary)
+
+        elif quick_action == "overspending":
+            response = generate_overspending_alert(summary)
+
+        else:
+            response = ask_gemini(prompt)
 
     return render_template(
         "ai/ai.html",

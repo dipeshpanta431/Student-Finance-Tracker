@@ -30,3 +30,66 @@
  .ai-textarea:focus { border-color: #60a5fa; box-shadow: 0 0 0 .25rem rgba(37,99,235,.12); }
  .ai-send-button { border-radius: 999px; padding: .7rem 1.2rem; font-weight: 600; white-space: nowrap; }
  @media (max-width: 575.98px) { .chat-panel-header, .ai-question-form, .chat-history { padding: 1rem; } .chat-message { max-width: 100%; } .ai-send-button { width: 100%; } }
+
+
+ .loading-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    margin-bottom:25px;
+
+    background:white;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+
+}
+
+.loading-avatar{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    background:#2563eb;
+
+    color:white;
+
+    animation:pulse 1.2s infinite;
+
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
