@@ -1,13 +1,15 @@
 import os
 
-from google import genai
 from dotenv import load_dotenv
+
+try:
+    from google import genai
+except ImportError:
+    genai = None
 
 load_dotenv()
 
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 def ask_gemini(prompt: str) -> str:
@@ -15,18 +17,25 @@ def ask_gemini(prompt: str) -> str:
     Sends a prompt to Gemini and returns the response.
     """
 
-    try:
-
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
+    if genai is None:
+        return (
+            "AI insights are unavailable because the Google GenAI package is not "
+            "installed. Run: python -m pip install -r requirements.txt"
         )
 
-        return response.text
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return "AI insights are unavailable because GEMINI_API_KEY is not configured."
 
-    except Exception as e:
-
-        return f"Error: {e}"
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+        )
+        return response.text or "The AI service returned an empty response."
+    except Exception:
+        return "AI insights are temporarily unavailable. Please try again later."
 
 from collections import defaultdict
 

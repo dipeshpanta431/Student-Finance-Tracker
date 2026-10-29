@@ -1323,26 +1323,33 @@ from models import Transaction
 @login_required
 def ai_insights():
 
+    response = None
     question = (request.form.get("question") or "").strip()
     quick_action = request.form.get("quick_action")
     question_lower = question.lower()
-
     greetings = {
         "hi": "Hello! 👋 I'm your AI Financial Assistant. How can I help you today?",
         "hello": "Hello! 👋 How can I assist you with your finances today?",
         "hey": "Hey! 😊 Ready to analyze your finances?",
+        "good morning": "Good morning! ☀️ How can I help with your finances today?",
+        "good evening": "Good evening! 🌙 What would you like to know?",
         "thanks": "You're welcome! 😊",
-        "thank you": "Happy to help! Let me know if you have any other questions.",
+        "thank you": "Happy to help! 😊",
         "bye": "Goodbye! 👋 Have a great day and keep tracking your expenses."
     }
 
-    if question_lower in greetings:
-        response = greetings[question_lower]
-        return render_template("ai/ai.html", response=response)
+    for key, value in greetings.items():
+        if key in question_lower:
+            response = value
+            return render_template(
+                "ai/ai.html",
+                response=response
+            )
 
     response = None
 
     if request.method == "POST":
+        
 
         transactions = Transaction.query.filter_by(
             user_id=current_user.id
